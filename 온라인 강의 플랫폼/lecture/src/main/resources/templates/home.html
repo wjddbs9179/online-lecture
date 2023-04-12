@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+<section>
+    <div class="container">
+        <h1 class="text-primary">홈페이지</h1>
+        <nav class="top-menu">
+            <ul>
+                <li>
+                    <a href="#">개발 · 프로그래밍</a>
+                    <ul>
+                        <li><a href="#">웹 개발</a></li>
+                        <li><a href="#">프론트엔드</a></li>
+                        <li><a href="#">백엔드</a></li>
+                        <li><a href="#">풀스택</a></li>
+                        <li><a href="#">모바일 앱 개발</a></li>
+                        <li><a href="#">게임 개발</a></li>
+                        <li><a href="#">프로그래밍 언어</a></li>
+                        <li><a href="#">알고리즘 · 자료구조</a></li>
+                        <li><a href="#">데이터베이스</a></li>
+                        <li><a href="#">데브옵스 · 인프라</a></li>
+                        <li><a href="#">자격증</a></li>
+                        <li><a href="#">개발 도구</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">보안 · 네트워크</a>
+                    <ul>
+                        <li><a href="#">보안</a></li>
+                        <li><a href="#">네트워크</a></li>
+                        <li><a href="#">시스템</a></li>
+                        <li><a href="#">클라우드</a></li>
+                        <li><a href="#">블록체인</a></li>
+                        <li><a href="#">자격증</a></li>
+                        <li><a href="#">기타</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">데이터 사이언스</a>
+                    <ul>
+                        <li><a href="#">데이터 분석</a></li>
+                        <li><a href="#">인공지능</a></li>
+                        <li><a href="#">데이터 시각화</a></li>
+                        <li><a href="#">데이터 수집 · 처리</a></li>
+                        <li><a href="#">자격증</a></li>
+                        <li><a href="#">기타</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">게임 개발</a>
+                    <ul>
+                        <li><a href="#">게임 프로그래밍</a></li>
+                        <li><a href="#">게임 기획</a></li>
+                        <li><a href="#">게임 아트 · 그래픽</a></li>
+                        <li><a href="#">기타</a></li>
+                        <li><a href="#">청강대 게임스쿨</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">하드웨어</a>
+                    <ul>
+                        <li><a href="#">컴퓨터 구조</a></li>
+                        <li><a href="#">임베디드 · IoT</a></li>
+                        <li><a href="#">반도체</a></li>
+                        <li><a href="#">로봇공학</a></li>
+                        <li><a href="#">모빌리티</a></li>
+                        <li><a href="#">자격증</a></li>
+                        <li><a href="#">기타</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">크리에이티브</a>
+                    <ul>
+                        <li><a href="#">CAD · 3D 모델링</a></li>
+                        <li><a href="#">웹 퍼블리싱</a></li>
+                        <li><a href="#">UX/UI</a></li>
+                        <li><a href="#">그래픽 디자인</a></li>
+                        <li><a href="#">디자인 툴</a></li>
+                        <li><a href="#">사진 · 영상</a></li>
+                        <li><a href="#">자격증</a></li>
+                        <li><a href="#">VR/AR</a></li>
+                        <li><a href="#">사운드</a></li>
+                        <li><a href="#">기타</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">비즈니스 · 마케팅</a>
+                    <ul>
+                        <li><a href="#">오피스</a></li>
+                        <li><a href="#">마케팅</a></li>
+                        <li><a href="#">기획 · 전략 · PM</a></li>
+                        <li><a href="#">업무 자동화</a></li>
+                        <li><a href="#">경영</a></li>
+                        <li><a href="#">자격증</a></li>
+                        <li><a href="#">기타</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">학문 · 외국어</a>
+                    <ul>
+                        <li><a href="#">수학</a></li>
+                        <li><a href="#">외국어</a></li>
+                        <li><a href="#">기타</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">커리어</a>
+                    <ul>
+                        <li><a href="#">취업·이직</a></li>
+                        <li><a href="#">개인 브랜딩</a></li>
+                        <li><a href="#">창업</a></li>
+                        <li><a href="#">기타</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">자기계발</a>
+                    <ul>
+                        <li><a href="#">금융 · 재테크</a></li>
+                        <li><a href="#">교양</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <div th:if="${session.memberId==null}" id="login-menu">
+            <a href="/member/login" class="btn btn-success" style="width: 300px;">로그인</a>
+        </div>
+    </div>
+</section>
+</body>
+</html>
