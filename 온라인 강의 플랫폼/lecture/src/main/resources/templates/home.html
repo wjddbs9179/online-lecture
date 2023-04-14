@@ -6,7 +6,7 @@
 </head>
 <body>
 <section>
-    <div class="container">
+    <div style="width:1050px;" class="container">
         <h1 class="text-primary">홈페이지</h1>
         <nav class="top-menu">
             <ul>
@@ -125,8 +125,22 @@
                 </li>
             </ul>
         </nav>
-        <div th:if="${session.memberId==null}" id="login-menu">
-            <a href="/member/login" class="btn btn-success" style="width: 300px;">로그인</a>
+        <hr>
+        <h4 class="text-info">최신 강의</h4>
+        <div>
+            <div class="row">
+                <div class="col-md-4" th:each="lecture, iterStat :${recentLecture}">
+                    <div class="card">
+                        <a th:href="|/lecture/info/${lecture.id}|">
+                            <img class="card-img-top" style="width:280px;" height="220px;" th:src="|lecture/images/${lecture.imageRoute}|">
+                        </a>
+                        <div class="card-body">
+                            <a class="card-title" style="text-align:center;" th:href="|/lecture/info/${lecture.id}|" th:text="${lecture.name}"></a>
+                        </div>
+                    </div>
+                    <div th:if="${iterStat.count} %3 == 0"></div>
+                </div>
+            </div>
         </div>
     </div>
 </section>

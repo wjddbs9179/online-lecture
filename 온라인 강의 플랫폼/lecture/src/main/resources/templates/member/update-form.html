@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>회원정보 수정</title>
+</head>
+<body>
+  <section>
+    <div style="width:500px;" class="container">
+      <h1 class="text-primary">회원정보 수정</h1>
+      <hr>
+      <form action="/member/update" method="post" th:object="${form}">
+        <div><label><h4>이름</h4></label></div>
+        <input type="text" class="form-control" th:field="*{username}">
+        <div><label><h4>비밀번호</h4></label></div>
+        <input type="text" class="form-control" th:field="*{password}">
+        <div><label><h4>email</h4></label></div>
+        <input type="text" class="form-control" th:field="*{email}">
+        <hr>
+        <button style="width:470px;" class="btn btn-success" type="submit">
+          확인
+        </button>
+      </form>
+    </div>
+  </section>
+</body>
+</html>

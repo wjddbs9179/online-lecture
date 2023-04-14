@@ -1,6 +1,8 @@
 package online.lecture.member.repository;
 
 import lombok.RequiredArgsConstructor;
+import online.lecture.member.controller.domain.IdSearchForm;
+import online.lecture.member.controller.domain.PwSearchForm;
 import online.lecture.member.controller.domain.UpdateMemberForm;
 import online.lecture.member.entity.Member;
 import org.springframework.dao.DataAccessException;
@@ -48,6 +50,21 @@ public class MemberRepository {
         return em.createQuery("select m from Member m where userId=:userId and password=:password",Member.class)
                 .setParameter("userId",userId)
                 .setParameter("password",password)
+                .getResultList().stream().findAny().orElse(null);
+    }
+
+    public Member idSearch(IdSearchForm form) {
+        return em.createQuery("select m from Member m where username=:username and email=:email",Member.class)
+                .setParameter("username",form.getUsername())
+                .setParameter("email",form.getEmail())
+                .getResultList().stream().findAny().orElse(null);
+    }
+
+    public Member pwSearch(PwSearchForm form) {
+        return em.createQuery("select m from Member m where userId=:userId and username=:username and email=:email", Member.class)
+                .setParameter("userId", form.getUserId())
+                .setParameter("username", form.getUsername())
+                .setParameter("email", form.getEmail())
                 .getResultList().stream().findAny().orElse(null);
     }
 }

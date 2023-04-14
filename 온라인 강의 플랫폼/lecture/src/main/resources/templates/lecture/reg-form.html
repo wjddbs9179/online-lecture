@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>강의 등록</title>
+</head>
+<body>
+<section>
+  <div style="width:500px;" class="container">
+    <h1 class="text-primary">강의 등록</h1>
+    <hr>
+    <form action="" method="post" th:object="${form}" enctype="multipart/form-data">
+      <label><h4>강의 명</h4></label>
+      <input type="text" th:field="*{name}" class="form-control">
+      <label><h4>카테고리</h4></label>
+      <select th:field="*{category}" class="form-control">
+        <option th:each="category : ${T(online.lecture.lecture.entity.Category).values()}"
+                th:value="${category}" th:text="${category.korName}"></option>
+      </select>
+
+      <label><h4>강의소개</h4></label>
+      <textarea type="text" class="form-control" th:field="*{intro}" rows="8"></textarea>
+
+      <label><h4>메인 이미지(첨부)</h4></label>
+      <input type="file" th:field="*{attachFile}" class="form-control">
+
+      <label><h4>강의영상링크(유튜브)</h4></label>
+      <button style="text-align:right;" class="btn btn-info" type="button" onclick="addInput()">추가</button>
+      <div id="input-container">
+        <!-- 초기 입력창 -->
+        <input style="display:inline-block;" class="form-control" type="text" name="videoRoute" />
+      </div>
+
+
+      <script>
+        function addInput() {
+          var inputContainer = document.getElementById("input-container");
+          var newInput = document.createElement("input");
+          newInput.setAttribute("type", "text");
+          newInput.setAttribute("name", "videoRoute");
+          newInput.setAttribute("class","form-control")
+          inputContainer.appendChild(newInput);
+        }
+      </script>
+      <hr>
+      <button type="submit" class="btn btn-success" style="width:470px;">등록</button>
+    </form>
+  </div>
+</section>
+</body>
+</html>

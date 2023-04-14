@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>회원탈퇴 확인</title>
+</head>
+<body>
+<section>
+  <div class="container" style="width:500px;">
+    <h1 class="text-primary">회원탈퇴 확인</h1>
+      <h4 class="text-warning">정말로 탈퇴하시겠습니까?</h4>
+      <hr>
+     <div><h4 class="text-primary">비밀번호</h4></div>
+    <form action="" method="post">
+      <input type="password" name="password" class="form-control">
+      <hr>
+      <button class="btn btn-warning" type="submit" style="width:230px;">확인</button>
+      <button type="button" class="btn btn-success" style="width:230px;" th:onclick="history.back();">취소</button>
+    </form>
+  </div>
+</section>
+</body>
+</html>

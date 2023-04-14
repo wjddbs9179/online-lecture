@@ -15,85 +15,101 @@
     <title th:replace="${title}">레이아웃 타이틀</title>
 </head>
 <body>
-<header style="text-align:center">
-    <a style="text-align:center; display:inline-block;" href="/" class="btn btn-info">홈페이지</a>
-</header>
+<div class="container">
+    <header style="text-align:center">
+        <a style="text-align:left; display:inline-block;" href="/" class="btn btn-info">홈페이지</a>
+    </header>
+    <aside style="text-align:right">
+        <div th:if="${session.memberId==null}" id="login-menu">
+            <a href="/member/login" class="btn btn-success">로그인</a>
+        </div>
+        <div th:if="${session.memberId!=null}">
+            <a href="/member/myInfo" class="btn btn-warning">내 정보</a>
+            <a href="/member/logout" class="btn btn-warning">로그아웃</a>
+        </div>
+    </aside>
+</div>
 <div th:replace="${content}">
 </div>
 </body>
 <style>
-    nav.top-menu ul, li{
-        margin:0;
-        padding:0;
-        list-style:none;
-    }
-
-    nav.top-menu a{
-        color:inherit;
-        text-decoration:none;
-        display:block;
-    }
-
-    nav.top-menu {
-        text-align:center;
-        display:inline-block;
-    }
-
-    nav.top-menu > ul {
-        display:inline-block;
-        border-radius:5px;
-        padding:0 10px;
-        background-color:#dfdfdf;
-    }
-
-    nav.top-menu li {
-        background-color:#dfdfdf;
-        position:relative;
-    }
-
-    nav.top-menu li:hover {
-        background-color:black;
-    }
-
-    nav.top-menu li:hover > ul {
-        display:block;
-    }
-
-    nav.top-menu li:hover > a{
-        color:white;
-    }
-
-    nav.top-menu ul ul {
-        display:none;
-        position:absolute;
-        top:100%;
-        left:0;
-    }
-
-    nav.top-menu ul ul ul {
-        top:0;
-        left:100%;
-    }
-
-    nav.top-menu > ul > li {
-        display:block;
-        float:left;
-    }
-
-    nav.top-menu > ul::after{
-        content:"";
-        display:block;
-        clear:both;
+    nav.top-menu ul, li {
+        margin: 0;
+        padding: 0;
+        list-style: none;
     }
 
     nav.top-menu a {
-        padding:10px;
-        display:block;
-        white-space:nowrap;
+        color: inherit;
+        text-decoration: none;
+        display: block;
     }
 
-    div#login-menu{
-        display:inline-block;
+    nav.top-menu > ul {
+        text-align:center;
+        display: inline-block;
+        border-radius: 5px;
+        padding: 0 10px;
+        background-color: #dfdfdf;
+    }
+
+    nav.top-menu li {
+        background-color: #dfdfdf;
+        position: relative;
+    }
+
+    nav.top-menu li:hover {
+        background-color: black;
+    }
+
+    nav.top-menu li:hover > ul {
+        display: block;
+        z-index: 1;
+    }
+
+    nav.top-menu li:hover > a {
+        color: white;
+    }
+
+    nav.top-menu ul ul {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+    }
+
+    nav.top-menu ul ul ul {
+        top: 0;
+        left: 100%;
+    }
+
+    nav.top-menu > ul > li {
+        display: block;
+        float: left;
+    }
+
+    nav.top-menu > ul::after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+
+    nav.top-menu a {
+        padding: 10px;
+        display: block;
+        white-space: nowrap;
+    }
+
+    div#login-menu {
+        display: inline-block;
+    }
+
+    .field-error {
+        color: red;
+    }
+
+    .field-error-input {
+        border-color: red;
     }
 </style>
 </html>

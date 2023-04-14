@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>아이디 찾기</title>
+</head>
+<body>
+<section>
+  <div style="width: 500px;" class="container">
+  <h1 class="text-primary">아이디 찾기</h1>
+
+  <form method="post" action="" th:object="${form}">
+    <span><label>이름</label></span>
+    <input type = "text" class="form-control" th:field="*{username}" th:errorclass="field-error-input">
+    <div class="field-error" th:errors="*{username}"></div>
+    <span><label>이메일</label></span>
+    <input type="email" class="form-control" th:field="*{email}" th:errorclass="field-error-input">
+    <div class="field-error" th:errors="*{email}"></div>
+    <hr>
+
+    <button type = "submit" class="btn btn-success" style="width: 470px; text-align: center">찾기</button>
+  </form>
+  </div>
+</section>
+</body>
+</html>
