@@ -36,7 +36,6 @@ public class LectureService {
     }
 
     public Lecture info(Long id) {
-
         return lectureRepository.find(id);
     }
 }

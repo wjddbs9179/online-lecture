@@ -44,10 +44,12 @@ public class LectureController {
         Lecture lecture = new Lecture(form.getName(),form.getCategory(),attachFile.getStoreFilename(),form.getIntro());
 
         String videoRoutes[] = request.getParameterValues("videoRoute");
-
+        String videoNames[] = request.getParameterValues("videoName");
+        int videoNameCount = 0;
         List<Video> videos = new ArrayList<>();
         for(String videoRoute : videoRoutes){
             Video video = new Video();
+            video.setName(videoNames[videoNameCount++]);
             video.setVideoRoute(videoRoute);
             lecture.addVideo(video);
             videos.add(video);

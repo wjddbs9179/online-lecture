@@ -28,6 +28,9 @@
       <button style="text-align:right;" class="btn btn-info" type="button" onclick="addInput()">추가</button>
       <div id="input-container">
         <!-- 초기 입력창 -->
+        <h4>회차 명</h4>
+        <input style="display:inline-block;" class="form-control" type="text" name="videoName" />
+        <h4>경로</h4>
         <input style="display:inline-block;" class="form-control" type="text" name="videoRoute" />
       </div>
 
@@ -39,6 +42,21 @@
           newInput.setAttribute("type", "text");
           newInput.setAttribute("name", "videoRoute");
           newInput.setAttribute("class","form-control")
+          var newInputName = document.createElement("input");
+          newInputName.setAttribute("type","text");
+          newInputName.setAttribute("name","videoName");
+          newInputName.setAttribute("class","form-control");
+          var newH4 = document.createElement("h4");
+          var newH4Text = document.createTextNode("회차 명");
+          newH4.appendChild(newH4Text);
+
+          var newH4Route = document.createElement("h4");
+          var newH4RouteText = document.createTextNode("경로");
+          newH4Route.appendChild(newH4RouteText);
+
+          inputContainer.appendChild(newH4);
+          inputContainer.appendChild(newInputName);
+          inputContainer.appendChild(newH4Route);
           inputContainer.appendChild(newInput);
         }
       </script>

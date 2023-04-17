@@ -14,8 +14,8 @@ public class LectureRepository {
     private final EntityManager em;
 
     public List<Lecture> recentLecture() {
-        return em.createQuery("select l from Lecture l",Lecture.class)
-                .setMaxResults(5)
+        return em.createQuery("select l from Lecture l order by id desc",Lecture.class)
+                .setMaxResults(9)
                 .setFirstResult(0)
                 .getResultList();
     }
@@ -25,6 +25,8 @@ public class LectureRepository {
     }
 
     public Lecture find(Long id) {
-        return em.find(Lecture.class,id);
+        return em.createQuery("select l from Lecture l join fetch l.videos where l.id=:id", Lecture.class)
+                .setParameter("id",id)
+                .getResultList().stream().findAny().orElse(null);
     }
 }
