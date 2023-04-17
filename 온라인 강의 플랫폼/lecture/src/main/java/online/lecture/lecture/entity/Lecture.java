@@ -12,6 +12,7 @@ import java.util.List;
 public class Lecture {
 
     @Id @GeneratedValue
+    @Column(name = "lecture_id")
     private Long id;
 
     private String name;

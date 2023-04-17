@@ -8,6 +8,9 @@
 <section>
   <div class="container">
   <h1 class="text-info">강의 상세 정보</h1>
+    <button type="button" class="btn btn-success" th:onclick="|location.href='/lecture/Enrolment/${lecture.id}'|">
+      수강신청
+    </button>
   <table class="table">
     <tr>
       <td>강의 명</td>

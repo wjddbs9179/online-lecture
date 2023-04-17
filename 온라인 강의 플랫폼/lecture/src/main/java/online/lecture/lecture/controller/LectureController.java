@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -81,5 +82,11 @@ public class LectureController {
         model.addAttribute(lecture);
 
         return "lecture/info";
+    }
+
+    @GetMapping("Enrolment/{id}")
+    public String enrolment(@PathVariable("id")Long id, HttpSession session){
+
+        return "redirect:/lecture/info/"+id;
     }
 }
