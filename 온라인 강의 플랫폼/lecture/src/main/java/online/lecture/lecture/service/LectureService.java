@@ -1,8 +1,8 @@
 package online.lecture.lecture.service;
 
 import lombok.RequiredArgsConstructor;
-import online.lecture.lecture.entity.Lecture;
-import online.lecture.lecture.entity.Video;
+import online.lecture.entity.Lecture;
+import online.lecture.entity.Video;
 import online.lecture.lecture.repository.LectureRepository;
 import online.lecture.lecture.repository.VideoRepository;
 import org.springframework.stereotype.Service;
@@ -37,5 +37,17 @@ public class LectureService {
 
     public Lecture info(Long id) {
         return lectureRepository.find(id);
+    }
+
+    public Video nextVideo(Long lectureId, Long videoId) {
+        return videoRepository.nextVideo(lectureId,videoId);
+    }
+
+    public Video prevVideo(Long lectureId, Long videoId) {
+        return videoRepository.prevVideo(lectureId,videoId);
+    }
+
+    public List<Lecture> filter(String category) {
+        return lectureRepository.filter(category);
     }
 }

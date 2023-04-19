@@ -8,7 +8,7 @@
 <section>
   <div class="container">
   <h1 class="text-info">강의 상세 정보</h1>
-    <button type="button" class="btn btn-success" th:onclick="|location.href='/lecture/Enrolment/${lecture.id}'|">
+    <button th:if="${!enrolment}" type="button" class="btn btn-success" th:onclick="|location.href='/member/Enrolment/${lecture.id}'|">
       수강신청
     </button>
   <table class="table">
@@ -23,7 +23,8 @@
     <tr><td colspan="2">목차</td></tr>
     <tr th:each="video : ${lecture.videos}" >
       <td>회차 명</td>
-      <td th:text="${video.name}"></td>
+      <td th:if="${!enrolment}" th:text="${video.name}"></td>
+      <td th:if="${enrolment}"><a th:href="|/lecture/video/${video.id}|" th:text="${video.name}"></a></td>
     </tr>
   </table>
   </div>

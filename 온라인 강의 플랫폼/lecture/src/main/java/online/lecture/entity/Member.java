@@ -1,10 +1,9 @@
-package online.lecture.member.entity;
+package online.lecture.entity;
 
 import lombok.Getter;
 import lombok.ToString;
-import online.lecture.lecture.entity.Lecture;
+import online.lecture.entity.Lecture;
 import online.lecture.member.controller.domain.UpdateMemberForm;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -23,8 +22,8 @@ public class Member {
     private String password;
     private String email;
 
-    @OneToMany(mappedBy = "member")
-    private List<Lecture> lectures = new ArrayList<>();
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<MemberLecture> lectures = new ArrayList<>();
 
     protected Member(){
 
@@ -41,5 +40,9 @@ public class Member {
         username = form.getUsername();
         password = form.getPassword();
         email = form.getEmail();
+    }
+
+    public void addLecture(MemberLecture memberLecture) {
+        lectures.add(memberLecture);
     }
 }

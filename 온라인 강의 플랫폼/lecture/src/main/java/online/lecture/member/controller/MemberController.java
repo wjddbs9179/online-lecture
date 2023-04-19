@@ -1,8 +1,9 @@
 package online.lecture.member.controller;
 
 import lombok.RequiredArgsConstructor;
+import online.lecture.entity.Lecture;
 import online.lecture.member.controller.domain.*;
-import online.lecture.member.entity.Member;
+import online.lecture.entity.Member;
 import online.lecture.member.service.MemberService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @RequestMapping("/member/")
@@ -26,6 +28,11 @@ public class MemberController {
 
     @PostMapping("join")
     public String joinsuccess(@Validated @ModelAttribute("form") JoinMemberForm form, BindingResult br){
+
+        if(!memberService.userIdUniqueCheck(form.getUserId()))
+            br.rejectValue("userId",null,"중복된 회원아이디 입니다.");
+
+
         if(!form.getPassword1().equals(form.getPassword2())){
             br.rejectValue("password2",null,"비밀번호와 일치하지 않습니다.");
         }
@@ -181,5 +188,22 @@ public class MemberController {
         else{
             return "member/delete-fail";
         }
+    }
+
+    @GetMapping("Enrolment/{id}")
+    public String enrolment(@PathVariable("id")Long lectureId, HttpSession session){
+        Long memberId = (Long)session.getAttribute("memberId");
+
+
+        memberService.enrolment(memberId,lectureId);
+        return "redirect:/lecture/info/"+lectureId;
+    }
+
+    @GetMapping("myLecture")
+    public String myLecture(Model model, HttpSession session){
+        Long memberId = (Long)session.getAttribute("memberId");
+        List<Lecture> lectures = memberService.myLecture(memberId);
+        model.addAttribute("mylecture",lectures);
+        return "member/my-lecture";
     }
 }

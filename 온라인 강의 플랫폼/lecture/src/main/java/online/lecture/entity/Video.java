@@ -1,4 +1,4 @@
-package online.lecture.lecture.entity;
+package online.lecture.entity;
 
 import lombok.Getter;
 

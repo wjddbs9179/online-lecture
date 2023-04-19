@@ -1,13 +1,19 @@
 package online.lecture.member.service;
 
 import lombok.RequiredArgsConstructor;
+import online.lecture.entity.Lecture;
+import online.lecture.entity.MemberLecture;
+import online.lecture.lecture.repository.LectureRepository;
 import online.lecture.member.controller.domain.IdSearchForm;
 import online.lecture.member.controller.domain.PwSearchForm;
 import online.lecture.member.controller.domain.UpdateMemberForm;
-import online.lecture.member.entity.Member;
+import online.lecture.entity.Member;
+import online.lecture.member.repository.MemberLectureRepository;
 import online.lecture.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Service
@@ -16,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final LectureRepository lectureRepository;
+    private final MemberLectureRepository memberLectureRepository;
 
     public Long join(Member member) {
         Long savedId = memberRepository.save(member);
@@ -67,5 +75,23 @@ public class MemberService {
             findMember.update(updateMemberForm);
         }
         return findMember;
+    }
+
+    public void enrolment(Long memberId, Long lectureId) {
+        Member member = info(memberId);
+        Lecture lecture = lectureRepository.find(lectureId);
+
+        MemberLecture memberLecture = new MemberLecture(member,lecture);
+        member.addLecture(memberLecture);
+    }
+
+    public List<Lecture> myLecture(Long memberId) {
+
+        Member member = memberRepository.find(memberId);
+        return memberLectureRepository.myLecture(member);
+    }
+
+    public boolean userIdUniqueCheck(String userId) {
+        return memberRepository.findByUserId(userId);
     }
 }

@@ -2,7 +2,7 @@ package online.lecture.member.service;
 
 import lombok.extern.slf4j.Slf4j;
 import online.lecture.member.controller.domain.UpdateMemberForm;
-import online.lecture.member.entity.Member;
+import online.lecture.entity.Member;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

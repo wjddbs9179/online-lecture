@@ -4,11 +4,12 @@ import lombok.RequiredArgsConstructor;
 import online.lecture.member.controller.domain.IdSearchForm;
 import online.lecture.member.controller.domain.PwSearchForm;
 import online.lecture.member.controller.domain.UpdateMemberForm;
-import online.lecture.member.entity.Member;
+import online.lecture.entity.Member;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -66,5 +67,17 @@ public class MemberRepository {
                 .setParameter("username", form.getUsername())
                 .setParameter("email", form.getEmail())
                 .getResultList().stream().findAny().orElse(null);
+    }
+
+    public boolean findByUserId(String userId) {
+        Member member = em.createQuery("select m from Member m where userId=:userId", Member.class)
+                .setParameter("userId", userId)
+                .getResultList().stream().findAny().orElse(null);
+
+        if(member==null)
+            return true;
+
+        return false;
+
     }
 }

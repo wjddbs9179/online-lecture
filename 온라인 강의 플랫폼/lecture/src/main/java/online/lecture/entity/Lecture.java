@@ -1,7 +1,8 @@
-package online.lecture.lecture.entity;
+package online.lecture.entity;
 
 import lombok.Getter;
-import online.lecture.lecture.controller.file.UploadFile;
+import online.lecture.entity.category.Category;
+import online.lecture.entity.category.SubCategory;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,15 +23,22 @@ public class Lecture {
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    @Enumerated(EnumType.STRING)
+    private SubCategory subCategory;
+
     @OneToMany(mappedBy = "lecture")
     private List<Video> videos = new ArrayList<>();
 
     private String intro;
 
+    @OneToMany(mappedBy = "lecture")
+    private List<MemberLecture> members = new ArrayList<>();
 
-    public Lecture(String name, Category category, String imageRoute,String intro) {
+
+    public Lecture(String name, Category category, SubCategory subCategory, String imageRoute,String intro) {
         this.name = name;
         this.category = category;
+        this.subCategory = subCategory;
         this.imageRoute = imageRoute;
         this.intro = intro;
     }

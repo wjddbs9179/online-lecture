@@ -1,11 +1,11 @@
 package online.lecture.lecture.controller.domain;
 
 import lombok.Data;
-import online.lecture.lecture.entity.Category;
-import online.lecture.lecture.entity.Video;
+import online.lecture.entity.category.Category;
+import online.lecture.entity.Video;
+import online.lecture.entity.category.SubCategory;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
