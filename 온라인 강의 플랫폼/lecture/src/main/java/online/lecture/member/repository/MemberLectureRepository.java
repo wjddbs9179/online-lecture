@@ -2,7 +2,7 @@ package online.lecture.member.repository;
 
 import lombok.RequiredArgsConstructor;
 import online.lecture.entity.Lecture;
-import online.lecture.entity.Member;
+import online.lecture.entity.member.Member;
 import online.lecture.entity.MemberLecture;
 import org.springframework.stereotype.Repository;
 

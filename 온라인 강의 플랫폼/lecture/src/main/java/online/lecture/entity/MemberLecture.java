@@ -1,6 +1,7 @@
 package online.lecture.entity;
 
 import lombok.Getter;
+import online.lecture.entity.member.Member;
 
 import javax.persistence.*;
 

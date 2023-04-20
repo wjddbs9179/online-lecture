@@ -2,9 +2,10 @@ package online.lecture.lecture.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import online.lecture.entity.Member;
+import online.lecture.entity.member.Member;
 import online.lecture.entity.MemberLecture;
 import online.lecture.entity.category.SubCategory;
+import online.lecture.entity.member.Teacher;
 import online.lecture.lecture.controller.domain.RegLectureForm;
 import online.lecture.lecture.controller.file.FileStore;
 import online.lecture.lecture.controller.file.UploadFile;
@@ -45,12 +46,15 @@ public class LectureController {
     }
 
     @PostMapping("reg-lecture")
-    public String regLecture(@ModelAttribute("form") RegLectureForm form, @RequestParam("subCategory")String subCategory,HttpServletRequest request) throws IOException {
+    public String regLecture(@ModelAttribute("form") RegLectureForm form, @RequestParam("subCategory")String subCategory,HttpServletRequest request,HttpSession session) throws IOException {
 
+        Long teacherId = (Long)session.getAttribute("teacherId");
+
+        Teacher teacher = memberService.info_teacher(teacherId);
         UploadFile attachFile = fileStore.storeFile(form.getAttachFile());
         SubCategory realSubCategory = form.getCategory().getSubCategories().stream().filter(sc -> sc.getKorName().equals(subCategory)).findAny().orElse(null);
 
-        Lecture lecture = new Lecture(form.getName(),form.getCategory(),realSubCategory,attachFile.getStoreFilename(),form.getIntro());
+        Lecture lecture = new Lecture(form.getName(),form.getCategory(),realSubCategory,attachFile.getStoreFilename(),form.getIntro(),teacher);
 
         String videoRoutes[] = request.getParameterValues("videoRoute");
         String videoNames[] = request.getParameterValues("videoName");

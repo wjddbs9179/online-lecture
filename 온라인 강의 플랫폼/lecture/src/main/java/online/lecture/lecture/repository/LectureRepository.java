@@ -49,4 +49,10 @@ public class LectureRepository {
         }
 
     }
+
+    public List<Lecture> myLectureTeacher(Long teacherId) {
+        return em.createQuery("select l from Lecture l where l.teacher.id=:teacherId",Lecture.class)
+                .setParameter("teacherId",teacherId)
+                .getResultList();
+    }
 }

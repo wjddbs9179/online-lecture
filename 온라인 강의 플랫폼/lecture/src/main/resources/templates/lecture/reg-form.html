@@ -9,7 +9,7 @@
   <div style="width:500px;" class="container">
     <h1 class="text-primary">강의 등록</h1>
     <hr>
-    <form action="" method="post" th:object="${form}" enctype="multipart/form-data">
+    <form action="/lecture/reg-lecture" method="post" th:object="${form}" enctype="multipart/form-data">
       <label><h4>강의 명</h4></label>
       <input type="text" th:field="*{name}" class="form-control">
 

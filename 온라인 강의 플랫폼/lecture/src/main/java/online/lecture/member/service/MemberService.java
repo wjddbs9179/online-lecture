@@ -2,12 +2,13 @@ package online.lecture.member.service;
 
 import lombok.RequiredArgsConstructor;
 import online.lecture.entity.Lecture;
+import online.lecture.entity.member.Member;
 import online.lecture.entity.MemberLecture;
+import online.lecture.entity.member.Teacher;
 import online.lecture.lecture.repository.LectureRepository;
 import online.lecture.member.controller.domain.IdSearchForm;
 import online.lecture.member.controller.domain.PwSearchForm;
 import online.lecture.member.controller.domain.UpdateMemberForm;
-import online.lecture.entity.Member;
 import online.lecture.member.repository.MemberLectureRepository;
 import online.lecture.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -34,9 +35,18 @@ public class MemberService {
         return memberRepository.update(id, form);
     }
 
+    public boolean updateTeacher(Long teacherId, UpdateMemberForm form) {
+        return memberRepository.updateTeacher(teacherId,form);
+    }
+
     public boolean delete(Long id) {
         Member findMember = memberRepository.find(id);
         return memberRepository.delete(findMember);
+    }
+
+    public boolean deleteTeacher(Long id) {
+        Teacher findTeacher = memberRepository.infoTeacher(id);
+        return memberRepository.deleteTeacher(findTeacher);
     }
 
     @Transactional(readOnly = true)
@@ -46,6 +56,10 @@ public class MemberService {
 
     public Member login(String userId, String password) {
         return memberRepository.login(userId, password);
+    }
+
+    public Teacher loginTeacher(String userId, String password) {
+        return memberRepository.loginTeacher(userId, password);
     }
 
     public Member idSearch(IdSearchForm form) {
@@ -91,7 +105,20 @@ public class MemberService {
         return memberLectureRepository.myLecture(member);
     }
 
-    public boolean userIdUniqueCheck(String userId) {
-        return memberRepository.findByUserId(userId);
+    public boolean userIdUniqueCheck(String userId,String division) {
+        return memberRepository.findByUserId(userId,division);
+    }
+
+    public Long joinTeacher(Teacher teacher) {
+        return memberRepository.saveTeacher(teacher);
+    }
+
+    public Teacher info_teacher(Long id) {
+        return memberRepository.infoTeacher(id);
+    }
+
+
+    public List<Lecture> myLectureTeacher(Long teacherId) {
+        return lectureRepository.myLectureTeacher(teacherId);
     }
 }

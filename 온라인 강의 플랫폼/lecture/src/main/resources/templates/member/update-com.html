@@ -5,9 +5,12 @@
     <title>회원정보 수정 완료</title>
 </head>
 <body>
-<script>
-  alert("수정되었습니다.");
-  location.href="/member/myInfo";
+<script th:inline="javascript">
+    alert("수정되었습니다.");
+
+    var division = /*[[${division}]]*/ "";
+
+    location.href = division == "teacher" ? "/member/myInfo/teacher" : "/member/myInfo";
 </script>
 </body>
 </html>

@@ -20,12 +20,18 @@
         <a style="text-align:left; display:inline-block;" href="/" class="text-primary"><h3>홈페이지</h3></a>
     </header>
     <aside style="text-align:right">
-        <div th:if="${session.memberId==null}" id="login-menu">
+        <div th:if="${session.memberId==null&&session.teacherId==null}" id="login-menu">
             <a href="/member/login" class="btn btn-success">로그인</a>
         </div>
-        <div th:if="${session.memberId!=null}">
+        <div th:if="${session.memberId!=null&&session.teacherId==null}">
             <a href="/member/myLecture" class="btn btn-warning">내 학습</a>
             <a href="/member/myInfo" class="btn btn-warning">내 정보</a>
+            <a href="/member/logout" class="btn btn-warning">로그아웃</a>
+        </div>
+        <div th:if="${session.memberId==null&&session.teacherId!=null}">
+            <a href="/member/lecture/reg" class="btn btn-warning">강의 등록 신청</a>
+            <a href="/member/myLecture/teacher" class="btn btn-warning">내 강의</a>
+            <a href="/member/myInfo/teacher" class="btn btn-warning">내 정보</a>
             <a href="/member/logout" class="btn btn-warning">로그아웃</a>
         </div>
         <hr>
