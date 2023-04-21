@@ -6,125 +6,160 @@
 </head>
 <body>
 <section>
-  <div style="width:500px;" class="container">
-    <h1 class="text-primary">강의 등록</h1>
-    <hr>
-    <form action="/lecture/reg-lecture" method="post" th:object="${form}" enctype="multipart/form-data">
-      <label><h4>강의 명</h4></label>
-      <input type="text" th:field="*{name}" class="form-control">
+    <div style="width:500px;" class="container">
+        <h1 class="text-primary">강의 등록</h1>
+        <hr>
+        <form action="" method="post" th:object="${form}" enctype="multipart/form-data">
+            <label><h4>강의 명</h4></label>
+            <input type="text" th:field="*{name}" class="form-control">
 
-      <div>
-        <label for="category"><h4>카테고리</h4></label>
-        <select id="category" name="category" th:field="*{category}" class="form-control" onchange="updateSubCategories()">
-          <option value="" selected>카테고리를 선택하세요</option>
-          <option th:each="category : ${T(online.lecture.entity.category.Category).values()}"
-                  th:value="${category.name()}" th:text="${category.getKorName()}"></option>
-        </select>
-      </div>
+            <div>
+                <label for="category"><h4>카테고리</h4></label>
+                <select id="category" name="category" th:field="*{category}" class="form-control"
+                        onchange="updateSubCategories()">
+                    <option value="" selected>카테고리를 선택하세요</option>
+                    <option th:each="category : ${T(online.lecture.entity.category.Category).values()}"
+                            th:value="${category.name()}" th:text="${category.getKorName()}"></option>
+                </select>
+            </div>
 
-      <div id="subCategory-container" style="display: none;">
-        <label for="subCategory"><h4>서브 카테고리</h4></label>
-        <select id="subCategory" name="subCategory" class="form-control">
-          <option value="" selected>서브 카테고리를 선택하세요</option>
-        </select>
-      </div>
-
-
-      <label><h4>강의소개</h4></label>
-      <textarea type="text" class="form-control" th:field="*{intro}" rows="8"></textarea>
-
-      <label><h4>메인 이미지(첨부)</h4></label>
-      <input type="file" th:field="*{attachFile}" class="form-control">
-
-      <label><h4>강의영상링크(유튜브)</h4></label>
-      <button style="text-align:right;" class="btn btn-info" type="button" onclick="addInput()">추가</button>
-      <div id="input-container">
-        <!-- 초기 입력창 -->
-        <h4>회차 명</h4>
-        <input style="display:inline-block;" class="form-control" type="text" name="videoName" />
-        <h4>경로</h4>
-        <input style="display:inline-block;" class="form-control" type="text" name="videoRoute" />
-      </div>
-      <hr>
-      <button type="submit" class="btn btn-success" style="width:470px;">등록</button>
-    </form>
+            <div id="subCategory-container" style="display: none;">
+                <label for="subCategory"><h4>서브 카테고리</h4></label>
+                <select id="subCategory" name="subCategory" class="form-control">
+                    <option value="" selected>서브 카테고리를 선택하세요</option>
+                </select>
+            </div>
 
 
+            <label><h4>강의소개</h4></label>
+            <textarea type="text" class="form-control" th:field="*{intro}" rows="8"></textarea>
+
+            <label><h4>메인 이미지(첨부)</h4></label>
+            <input type="file" th:field="*{attachFile}" class="form-control">
+
+            <div th:if="${session.adminId!=null}">
+                <label><h4>강의영상링크(유튜브)</h4></label>
+                <button style="text-align:right;" class="btn btn-info" type="button" onclick="addInput()">추가</button>
+                <div id="input-container">
+                    <!-- 초기 입력창 -->
+                    <h4>회차 명</h4>
+                    <input style="display:inline-block;" class="form-control" type="text" name="videoName"/>
+                    <h4>경로</h4>
+                    <input style="display:inline-block;" class="form-control" type="text" name="videoRoute"/>
+                </div>
+            </div>
+            <div th:if="${session.teacherId!=null}">
+                <label><h4>강의영상파일</h4></label>
+                <button style="text-align:right;" class="btn btn-info" type="button" onclick="addInput()">추가</button>
+                <div id="input-container-videoFile">
+                    <!-- 초기 입력창 -->
+                    <h4>회차 명</h4>
+                    <input style="display:inline-block;" class="form-control" type="text" name="videoName"/>
+                    <h4>영상 파일</h4>
+                    <input style="display:inline-block;" class="form-control" type="file" name="videoFiles"/>
+                </div>
+            </div>
+            <hr>
+            <button type="submit" class="btn btn-success" style="width:470px;">등록</button>
+        </form>
 
 
+        <script th:inline="javascript">
+            function updateSubCategories() {
+                const category = document.getElementById('category').value;
+                const subCategorySelect = document.getElementById('subCategory');
+                subCategorySelect.innerHTML = '<option value="" selected>서브 카테고리를 선택하세요</option>';
+                const subCategories = getCategorySubCategories(category);
+                subCategories.forEach(subCategory => {
+                    const option = document.createElement('option');
+                    option.value = subCategory;
+                    option.text = subCategory;
+                    subCategorySelect.add(option);
+                });
 
-      <script th:inline="javascript">
-        function updateSubCategories() {
-          const category = document.getElementById('category').value;
-          const subCategorySelect = document.getElementById('subCategory');
-          subCategorySelect.innerHTML = '<option value="" selected>서브 카테고리를 선택하세요</option>';
-          const subCategories = getCategorySubCategories(category);
-          subCategories.forEach(subCategory => {
-            const option = document.createElement('option');
-            option.value = subCategory;
-            option.text = subCategory;
-            subCategorySelect.add(option);
-          });
+                const subCategoryContainer = document.getElementById('subCategory-container');
+                subCategoryContainer.setAttribute("style", "display:block;");
+                if (category === "") {
+                    subCategoryContainer.setAttribute("style", "display:none");
+                }
+            }
 
-          const subCategoryContainer = document.getElementById('subCategory-container');
-          subCategoryContainer.setAttribute("style","display:block;");
-          if(category===""){
-            subCategoryContainer.setAttribute("style","display:none");
-          }
-        }
+            function getCategorySubCategories(category) {
+                switch (category) {
+                    case 'DEVELOPMENT_PROGRAMMING':
+                        return ['웹 개발', '프론트엔드', '백엔드', '풀스택', '모바일 앱 개발', '게임 개발', '프로그래밍 언어', '알고리즘 · 자료구조', '데이터베이스', '데브옵스 · 인프라', '자격증', '개발 도구'];
+                    case 'SECURE_NETWORK':
+                        return ['보안', '네트워크', '시스템', '클라우드', '블록체인', '자격증', '기타'];
+                    case 'DATA_SCIENCE':
+                        return ['데이터분석', '인공지능', '데이터 시각화', '데이터 수집 · 처리', '자격증', '기타'];
+                    case 'GAME_DEVELOPMENT':
+                        return ['게임 프로그래밍', '게임 기획', '게임 아트 · 그래픽', '기타', '청강대 게임스쿨'];
+                    case 'HARDWARE':
+                        return ['컴퓨터 구조', '임베디드 · IoT', '반도체', '로봇 공학', '모빌리티', '자격증', '기타'];
+                    case 'CREATIVE':
+                        return ['CAD · 3D 모델링', '웹 퍼블리싱', 'UX/UI', '그래픽 디자인', '디자인 툴', '사진 · 영상', 'VR/AR', '사운드', '기타'];
+                    case 'BUSINESS_MARKETING':
+                        return ['오피스', '마케팅', '기획 · 전략 · PM', '업무 자동화', '경영', '자격증', '기타'];
+                    case 'STUDY_FOREIGN_LANGUAGE':
+                        return ['수학', '외국어', '기타'];
+                    case 'CAREER':
+                        return ['취업 · 이직', '개인 브랜딩', '창업', '기타'];
+                    case 'SELF_DEVELOPMENT':
+                        return ['금융 · 재태크', '교양'];
+                    default:
+                        return [];
+                }
+            }
 
-        function getCategorySubCategories(category) {
-          switch (category) {
-            case 'DEVELOPMENT_PROGRAMMING':
-              return ['웹 개발', '프론트엔드', '백엔드', '풀스택', '모바일 앱 개발', '게임 개발', '프로그래밍 언어', '알고리즘 · 자료구조', '데이터베이스', '데브옵스 · 인프라', '자격증', '개발 도구'];
-            case 'SECURE_NETWORK':
-              return ['보안', '네트워크', '시스템', '클라우드', '블록체인', '자격증', '기타'];
-            case 'DATA_SCIENCE':
-              return ['데이터분석', '인공지능', '데이터 시각화', '데이터 수집 · 처리', '자격증', '기타'];
-            case 'GAME_DEVELOPMENT':
-              return ['게임 프로그래밍', '게임 기획', '게임 아트 · 그래픽', '기타', '청강대 게임스쿨'];
-            case 'HARDWARE':
-              return ['컴퓨터 구조', '임베디드 · IoT', '반도체', '로봇 공학', '모빌리티', '자격증', '기타'];
-            case 'CREATIVE':
-              return ['CAD · 3D 모델링', '웹 퍼블리싱', 'UX/UI', '그래픽 디자인', '디자인 툴', '사진 · 영상', 'VR/AR', '사운드', '기타'];
-            case 'BUSINESS_MARKETING':
-              return ['오피스', '마케팅', '기획 · 전략 · PM', '업무 자동화', '경영', '자격증', '기타'];
-            case 'STUDY_FOREIGN_LANGUAGE':
-              return ['수학', '외국어', '기타'];
-            case 'CAREER':
-              return ['취업 · 이직', '개인 브랜딩', '창업', '기타'];
-            case 'SELF_DEVELOPMENT':
-              return ['금융 · 재태크', '교양'];
-            default:
-              return [];
-          }
-        }
+            function addInput() {
+                var inputContainer = document.getElementById("input-container");
+                var newInput = document.createElement("input");
+                newInput.setAttribute("type", "text");
+                newInput.setAttribute("name", "videoRoute");
+                newInput.setAttribute("class", "form-control")
+                var newInputName = document.createElement("input");
+                newInputName.setAttribute("type", "text");
+                newInputName.setAttribute("name", "videoName");
+                newInputName.setAttribute("class", "form-control");
+                var newH4 = document.createElement("h4");
+                var newH4Text = document.createTextNode("회차 명");
+                newH4.appendChild(newH4Text);
 
-      function addInput() {
-          var inputContainer = document.getElementById("input-container");
-          var newInput = document.createElement("input");
-          newInput.setAttribute("type", "text");
-          newInput.setAttribute("name", "videoRoute");
-          newInput.setAttribute("class","form-control")
-          var newInputName = document.createElement("input");
-          newInputName.setAttribute("type","text");
-          newInputName.setAttribute("name","videoName");
-          newInputName.setAttribute("class","form-control");
-          var newH4 = document.createElement("h4");
-          var newH4Text = document.createTextNode("회차 명");
-          newH4.appendChild(newH4Text);
+                var newH4Route = document.createElement("h4");
+                var newH4RouteText = document.createTextNode("경로");
+                newH4Route.appendChild(newH4RouteText);
 
-          var newH4Route = document.createElement("h4");
-          var newH4RouteText = document.createTextNode("경로");
-          newH4Route.appendChild(newH4RouteText);
+                inputContainer.appendChild(newH4);
+                inputContainer.appendChild(newInputName);
+                inputContainer.appendChild(newH4Route);
+                inputContainer.appendChild(newInput);
+            }
 
-          inputContainer.appendChild(newH4);
-          inputContainer.appendChild(newInputName);
-          inputContainer.appendChild(newH4Route);
-          inputContainer.appendChild(newInput);
-        }
-      </script>
-  </div>
+            function addInputFile() {
+                var inputContainer = document.getElementById("input-container-videoFile");
+                var newInput = document.createElement("input");
+                newInput.setAttribute("type", "file");
+                newInput.setAttribute("name", "videoFiles");
+                newInput.setAttribute("class", "form-control")
+                var newInputName = document.createElement("input");
+                newInputName.setAttribute("type", "text");
+                newInputName.setAttribute("name", "videoName");
+                newInputName.setAttribute("class", "form-control");
+                var newH4 = document.createElement("h4");
+                var newH4Text = document.createTextNode("회차 명");
+                newH4.appendChild(newH4Text);
+
+                var newH4Route = document.createElement("h4");
+                var newH4RouteText = document.createTextNode("영상파일");
+                newH4Route.appendChild(newH4RouteText);
+
+                inputContainer.appendChild(newH4);
+                inputContainer.appendChild(newInputName);
+                inputContainer.appendChild(newH4Route);
+                inputContainer.appendChild(newInput);
+            }
+        </script>
+    </div>
 </section>
 </body>
 </html>

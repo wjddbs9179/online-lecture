@@ -206,7 +206,7 @@ public class MemberController {
     }
 
     @PostMapping("update")
-    public String update(@ModelAttribute("form") UpdateMemberForm form, HttpSession session,Model model) {
+    public String update(@Validated @ModelAttribute("form") UpdateMemberForm form,BindingResult br, HttpSession session,Model model) {
         if(session.getAttribute("memberId")!=null) {
             Long memberId = (Long) session.getAttribute("memberId");
             memberService.update(memberId, form);
@@ -217,6 +217,8 @@ public class MemberController {
             memberService.updateTeacher(teacherId,form);
             model.addAttribute("division","teacher");
         }
+        if(br.hasErrors())
+            return "member/update-form";
         return "member/update-com";
     }
 
@@ -226,7 +228,7 @@ public class MemberController {
     }
 
     @PostMapping("drop")
-    public String dropMember(@RequestParam String password, HttpSession session) {
+    public String dropMember(@RequestParam(defaultValue = "") String password, HttpSession session) {
         if(session.getAttribute("memberId")!=null) {
             Long memberId = (Long) session.getAttribute("memberId");
 
@@ -252,10 +254,15 @@ public class MemberController {
 
     @GetMapping("Enrolment/{id}")
     public String enrolment(@PathVariable("id") Long lectureId, HttpSession session) {
-        Long memberId = (Long) session.getAttribute("memberId");
+        if(session.getAttribute("memberId")!=null) {
+            Long memberId = (Long) session.getAttribute("memberId");
 
 
-        memberService.enrolment(memberId, lectureId);
+            memberService.enrolment(memberId, lectureId);
+        }
+        if(session.getAttribute("teacherId")!=null){
+            return "member/enrolment-teacher";
+        }
         return "redirect:/lecture/info/" + lectureId;
     }
 
@@ -273,11 +280,5 @@ public class MemberController {
         List<Lecture> lectures = memberService.myLectureTeacher(teacherId);
         model.addAttribute("myLecture",lectures);
         return "member/my-lecture";
-    }
-
-    @GetMapping("lecture/reg")
-    public String lectureReg(Model model, @ModelAttribute("form")RegLectureForm form){
-        model.addAttribute("form",form);
-        return "lecture/reg-form";
     }
 }

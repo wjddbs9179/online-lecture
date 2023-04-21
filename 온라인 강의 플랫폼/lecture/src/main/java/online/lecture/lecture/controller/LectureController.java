@@ -52,18 +52,22 @@ public class LectureController {
 
         Teacher teacher = memberService.info_teacher(teacherId);
         UploadFile attachFile = fileStore.storeFile(form.getAttachFile());
+        List<UploadFile> videoFiles = fileStore.storeFiles(form.getVideoFiles());
+
+
         SubCategory realSubCategory = form.getCategory().getSubCategories().stream().filter(sc -> sc.getKorName().equals(subCategory)).findAny().orElse(null);
 
         Lecture lecture = new Lecture(form.getName(),form.getCategory(),realSubCategory,attachFile.getStoreFilename(),form.getIntro(),teacher);
 
-        String videoRoutes[] = request.getParameterValues("videoRoute");
+        lecture.setPub(false);
+
         String videoNames[] = request.getParameterValues("videoName");
         int videoNameCount = 0;
         List<Video> videos = new ArrayList<>();
-        for(String videoRoute : videoRoutes){
+        for(UploadFile videoFile : videoFiles){
             Video video = new Video();
             video.setName(videoNames[videoNameCount++]);
-            video.setVideoRoute(videoRoute);
+            video.setVideoRoute(videoFile.getStoreFilename());
             lecture.addVideo(video);
             videos.add(video);
         }
@@ -96,22 +100,47 @@ public class LectureController {
         return new UrlResource("file:"+fileStore.getFullPath(filename));
     }
 
+    @ResponseBody
+    @GetMapping("videoFile/{filename}")
+    public Resource videoFileView(@PathVariable String filename) throws MalformedURLException{
+        return new UrlResource("file:"+fileStore.getFullPath(filename));
+    }
+
     @GetMapping("info/{id}")
     public String info(Model model, @PathVariable Long id,HttpSession session){
         Lecture lecture = lectureService.info(id);
         model.addAttribute(lecture);
+
+        Long teacherId = (Long)session.getAttribute("teacherId");
         Long memberId = (Long)session.getAttribute("memberId");
+        Long adminId = (Long)session.getAttribute("adminId");
 
-        Member member = memberService.info(memberId);
-        MemberLecture ml = member.getLectures().stream()
-                .filter(memberLecture -> memberLecture.getMember().getId() == memberId
-                        && memberLecture.getLecture().getId() == id)
-                .findAny().orElse(null);
+        if(adminId!=null){
+            model.addAttribute("enrolment", true);
+        }
 
-        if(ml!=null){
-            model.addAttribute("enrolment",true);
-        }else {
-            model.addAttribute("enrolment",false);
+        if(memberId!=null) {
+            Member member = memberService.info(memberId);
+            MemberLecture ml = member.getLectures().stream()
+                    .filter(memberLecture -> memberLecture.getMember().getId() == memberId
+                            && memberLecture.getLecture().getId() == id)
+                    .findAny().orElse(null);
+
+            if (ml != null) {
+                model.addAttribute("enrolment", true);
+            } else {
+                model.addAttribute("enrolment", false);
+            }
+        }else if(teacherId!=null){
+            Teacher teacher = memberService.info_teacher(teacherId);
+            Lecture tl = teacher.getMyLectures().stream().filter(l -> l.getId().equals(lecture.getId()))
+                    .findAny().orElse(null);
+
+            if(tl!=null){
+                model.addAttribute("enrolment",true);
+            }else {
+                model.addAttribute("enrolment",false);
+            }
         }
 
         return "lecture/info";
@@ -139,4 +168,5 @@ public class LectureController {
         model.addAttribute("video",video);
         return "lecture/video-play";
     }
+
 }

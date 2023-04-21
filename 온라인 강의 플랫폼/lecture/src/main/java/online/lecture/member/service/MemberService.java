@@ -121,4 +121,5 @@ public class MemberService {
     public List<Lecture> myLectureTeacher(Long teacherId) {
         return lectureRepository.myLectureTeacher(teacherId);
     }
+
 }

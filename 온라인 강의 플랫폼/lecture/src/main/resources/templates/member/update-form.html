@@ -11,11 +11,14 @@
       <hr>
       <form action="/member/update" method="post" th:object="${form}">
         <div><label><h4>이름</h4></label></div>
-        <input type="text" class="form-control" th:field="*{username}">
+        <input type="text" class="form-control" th:field="*{username}" th:errorclass="field-error-input">
+        <div class="field-error" th:errors="*{username}"></div>
         <div><label><h4>비밀번호</h4></label></div>
-        <input type="text" class="form-control" th:field="*{password}">
+        <input type="text" class="form-control" th:field="*{password}" th:errorclass="field-error-input">
+        <div class="field-error" th:errors="*{password}"></div>
         <div><label><h4>email</h4></label></div>
-        <input type="text" class="form-control" th:field="*{email}">
+        <input type="text" class="form-control" th:field="*{email}" th:errorclass="field-error-input">
+        <div class="field-error" th:errors="*{email}"></div>
         <hr>
         <button style="width:470px;" class="btn btn-success" type="submit">
           확인

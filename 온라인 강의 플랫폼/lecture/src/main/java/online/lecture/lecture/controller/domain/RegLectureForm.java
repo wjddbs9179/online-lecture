@@ -21,5 +21,7 @@ public class RegLectureForm {
     private List<MultipartFile> imageFiles;
     private MultipartFile attachFile;
 
+    private List<MultipartFile> videoFiles;
+
     private String intro;
 }

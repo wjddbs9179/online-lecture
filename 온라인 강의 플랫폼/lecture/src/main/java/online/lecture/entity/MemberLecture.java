@@ -18,6 +18,8 @@ public class MemberLecture {
     @JoinColumn(name = "lecture_id")
     private Lecture lecture;
 
+    private double progressRate;
+
     public MemberLecture(Member member, Lecture lecture) {
         this.member = member;
         this.lecture = lecture;

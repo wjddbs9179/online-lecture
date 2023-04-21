@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+  <meta charset="UTF-8">
+  <title>login</title>
+</head>
+<body>
+<section class="container">
+  <h1 class="text-primary">로그인</h1>
+  <div style="width:500px">
+    <hr>
+    <form action="" th:object="${form}" method="post">
+      <h4><span>아이디</span></h4>
+      <input class="form-control" type="text" th:field="*{userId}">
+      <h4><span>비밀번호</span></h4>
+      <input class="form-control" type="password" th:field="*{password}">
+      <hr>
+      <button style="width: 500px" type="submit" class="btn btn-success">로그인 하기</button>
+    </form>
+    <hr>
+  </div>
+</section>
+</body>
+</html>

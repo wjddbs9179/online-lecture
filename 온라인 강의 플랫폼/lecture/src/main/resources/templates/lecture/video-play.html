@@ -9,12 +9,16 @@
     <div style="width:800px;" class="container">
         <h3 th:text="${video.name}" class="text-primary"></h3>
     <hr>
-        <iframe width="770px" height="500px"
+        <iframe th:if="${video.videoRoute.substring(0,5)=='https'}" width="770px" height="500px"
                 th:src="${video.videoRoute}"
                 title="YouTube video player"
                 frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowfullscreen></iframe>
+
+        <video th:if="${video.videoRoute.substring(0,5)!='https'}" width="770px" height="500px"
+            th:src="|/lecture/videoFile/${video.videoRoute}|" autoplay="autoplay" controls="controls">
+        </video>
         <hr>
         <a th:href="|/lecture/prev-video/${video.lecture.id}/${video.id}|" class="btn btn-info">이전 화</a>
         <a th:href="|/lecture/next-video/${video.lecture.id}/${video.id}|" class="btn btn-info">다음 화</a>

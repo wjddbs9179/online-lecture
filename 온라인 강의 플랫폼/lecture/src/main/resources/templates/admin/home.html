@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+  <meta charset="UTF-8">
+  <title>Home</title>
+</head>
+<body>
+<section>
+  <div style="width:1050px;" class="container">
+    <h4 class="text-info">등록 대기 강의</h4>
+    <div>
+      <div class="row">
+        <div class="col-md-4" th:each="lecture, iterStat :${waitingLecture}">
+          <div class="card">
+            <a th:href="|/lecture/info/${lecture.id}|">
+              <img class="card-img-top" style="width:280px;" height="220px;" th:src="|/lecture/images/${lecture.imageRoute}|">
+            </a>
+            <div class="card-body">
+              <a class="card-title" style="text-align:center;" th:href="|/lecture/info/${lecture.id}|" th:text="${lecture.name}"></a>
+            </div>
+          </div>
+          <div th:if="${iterStat.count} %3 == 0"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

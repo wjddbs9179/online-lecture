@@ -39,8 +39,13 @@ public class Lecture {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
+    private boolean pub;
 
-    public Lecture(String name, Category category, SubCategory subCategory, String imageRoute,String intro,Teacher teacher) {
+    public void setPub(boolean pub) {
+        this.pub = pub;
+    }
+
+    public Lecture(String name, Category category, SubCategory subCategory, String imageRoute, String intro, Teacher teacher) {
         this.name = name;
         this.category = category;
         this.subCategory = subCategory;
