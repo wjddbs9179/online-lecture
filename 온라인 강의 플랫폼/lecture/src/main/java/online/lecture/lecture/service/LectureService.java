@@ -1,6 +1,7 @@
 package online.lecture.lecture.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import online.lecture.entity.Lecture;
 import online.lecture.entity.Video;
 import online.lecture.lecture.repository.LectureRepository;
@@ -13,6 +14,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class LectureService {
 
     private final LectureRepository lectureRepository;
@@ -28,7 +30,9 @@ public class LectureService {
     }
 
     public Video findVideo(Long id){
-        return videoRepository.find(id);
+        Video video = videoRepository.find(id);
+        log.info("teacher={}",video.getLecture().getTeacher());
+        return video;
     }
 
     public List<Lecture> recentLecture() {
@@ -36,7 +40,9 @@ public class LectureService {
     }
 
     public Lecture info(Long id) {
-        return lectureRepository.find(id);
+        Lecture lecture = lectureRepository.find(id);
+        log.info("teacher={}",lecture.getTeacher());
+        return lecture;
     }
 
     public Video nextVideo(Long lectureId, Long videoId) {

@@ -55,6 +55,8 @@ public class AdminController {
     public String login(@ModelAttribute("form") AdminLoginForm form, HttpSession session) {
         Admin admin = adminService.login(form);
 
+        session.setAttribute("memberId",null);
+        session.setAttribute("teacherId",null);
         session.setAttribute("adminId", admin.getId());
 
         return "redirect:/admin/home";

@@ -50,11 +50,11 @@ public class LectureController {
     @PostMapping("reg-lecture")
     public String regLecture(@Validated @ModelAttribute("form") RegLectureForm form, BindingResult br, @RequestParam("subCategory") String subCategory, HttpServletRequest request, HttpSession session) throws IOException {
 
-        if(form.getAttachFile()==null){
-            br.rejectValue("attachFile",null,"메인 이미지를 선택해주세요.");
+        if (form.getAttachFile() == null) {
+            br.rejectValue("attachFile", null, "메인 이미지를 선택해주세요.");
         }
 
-        if(br.hasErrors())
+        if (br.hasErrors())
             return "lecture/reg-form";
 
 
@@ -67,7 +67,7 @@ public class LectureController {
 
         SubCategory realSubCategory = null;
 
-        if(form.getCategory().getSubCategories()!=null) {
+        if (form.getCategory().getSubCategories() != null) {
             realSubCategory = form.getCategory().getSubCategories().stream().filter(sc -> sc.getKorName().equals(subCategory)).findAny().orElse(null);
         }
         Lecture lecture = new Lecture(form.getName(), form.getCategory(), realSubCategory, attachFile.getStoreFilename(), form.getIntro(), teacher);
@@ -90,11 +90,18 @@ public class LectureController {
     }
 
     @GetMapping("video/{id}")
-    public String videoPlay(Model model, @PathVariable("id") Long id) {
+    public String videoPlay(Model model, @PathVariable("id") Long id, HttpSession session) {
         log.info("id = {} ", id);
         Video video = lectureService.findVideo(id);
 
         model.addAttribute("video", video);
+        if (!video.getLecture().getTeacher().getId().equals(session.getAttribute("teacherId"))) {
+            if (video != null) {
+                return "lecture/video-play";
+            } else {
+                return "lecture/video-notPub";
+            }
+        }
         return "lecture/video-play";
     }
 
@@ -122,6 +129,11 @@ public class LectureController {
     @GetMapping("info/{id}")
     public String info(Model model, @PathVariable Long id, HttpSession session) {
         Lecture lecture = lectureService.info(id);
+
+        if (session.getAttribute("adminId") == null) {
+            if (!lecture.isPub() && lecture.getTeacher().equals(session.getAttribute("teacherId")))
+                return "lecture/video-notPub";
+        }
         model.addAttribute(lecture);
 
         Long teacherId = (Long) session.getAttribute("teacherId");
@@ -167,6 +179,10 @@ public class LectureController {
         if (video == null)
             return "lecture/lastVideo";
 
+        if (!video.getLecture().isPub()) {
+            return "lecture/video-notPub";
+        }
+
         model.addAttribute("video", video);
         return "lecture/video-play";
     }
@@ -177,6 +193,10 @@ public class LectureController {
 
         if (video == null)
             return "lecture/firstVideo";
+
+        if (!video.getLecture().isPub()) {
+            return "lecture/video-notPub";
+        }
 
         model.addAttribute("video", video);
         return "lecture/video-play";
