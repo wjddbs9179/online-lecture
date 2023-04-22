@@ -6,21 +6,23 @@
 </head>
 <body>
 <section>
-    <div style="width:500px;" class="container">
+    <div style="width:700px;" class="container">
         <h1 class="text-primary">강의 등록</h1>
         <hr>
         <form action="" method="post" th:object="${form}" enctype="multipart/form-data">
             <label><h4>강의 명</h4></label>
-            <input type="text" th:field="*{name}" class="form-control">
+            <input type="text" th:field="*{name}" class="form-control" th:errorclass="field-error-input">
+            <div class="field-error" th:errors="*{name}"></div>
 
             <div>
                 <label for="category"><h4>카테고리</h4></label>
                 <select id="category" name="category" th:field="*{category}" class="form-control"
-                        onchange="updateSubCategories()">
+                        onchange="updateSubCategories()" th:errorclass="field-error-input">
                     <option value="" selected>카테고리를 선택하세요</option>
                     <option th:each="category : ${T(online.lecture.entity.category.Category).values()}"
                             th:value="${category.name()}" th:text="${category.getKorName()}"></option>
                 </select>
+                <div class="field-error" th:errors="*{category}"></div>
             </div>
 
             <div id="subCategory-container" style="display: none;">
@@ -36,6 +38,7 @@
 
             <label><h4>메인 이미지(첨부)</h4></label>
             <input type="file" th:field="*{attachFile}" class="form-control">
+            <div class="field-error" th:errors="*{attachFile}"></div>
 
             <div th:if="${session.adminId!=null}">
                 <label><h4>강의영상링크(유튜브)</h4></label>
@@ -50,7 +53,7 @@
             </div>
             <div th:if="${session.teacherId!=null}">
                 <label><h4>강의영상파일</h4></label>
-                <button style="text-align:right;" class="btn btn-info" type="button" onclick="addInput()">추가</button>
+                <button style="text-align:right;" class="btn btn-info" type="button" onclick="addInputFile()">추가</button>
                 <div id="input-container-videoFile">
                     <!-- 초기 입력창 -->
                     <h4>회차 명</h4>
@@ -60,7 +63,7 @@
                 </div>
             </div>
             <hr>
-            <button type="submit" class="btn btn-success" style="width:470px;">등록</button>
+            <button type="submit" class="btn btn-success" style="width:670px;">등록</button>
         </form>
 
 

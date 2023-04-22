@@ -15,6 +15,8 @@ import online.lecture.lecture.service.LectureService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -83,7 +85,11 @@ public class AdminController {
     }
 
     @PostMapping("lecture/reg")
-    public String regLecture(@ModelAttribute("form") RegLectureForm form, @RequestParam("subCategory")String subCategory, HttpServletRequest request, HttpSession session) throws IOException {
+    public String regLecture(@Validated @ModelAttribute("form") RegLectureForm form, BindingResult br, @RequestParam("subCategory")String subCategory, HttpServletRequest request, HttpSession session) throws IOException {
+
+        if(br.hasErrors()){
+            return "lecture/reg-form";
+        }
 
         UploadFile attachFile = fileStore.storeFile(form.getAttachFile());
         SubCategory realSubCategory = form.getCategory().getSubCategories().stream().filter(sc -> sc.getKorName().equals(subCategory)).findAny().orElse(null);

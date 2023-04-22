@@ -25,19 +25,46 @@
             <a href="/member/login" class="btn btn-success">로그인</a>
         </div>
         <div th:if="${session.memberId!=null&&session.teacherId==null&&session.adminId==null}">
-            <a href="/member/myLecture" class="btn btn-warning">내 학습</a>
-            <a href="/member/myInfo" class="btn btn-warning">내 정보</a>
-            <a href="/member/logout" class="btn btn-warning">로그아웃</a>
+            <nav class="top-menu">
+                <ul>
+                    <li>
+                        <a href="#">메뉴</a>
+                        <ul>
+                            <li><a href="/member/myLecture">내 학습</a></li>
+                            <li><a href="/member/myInfo">내 정보</a></li>
+                            <li><a href="/member/logout">로그아웃</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
         </div>
         <div th:if="${session.memberId==null&&session.teacherId!=null&&session.adminId==null}">
-            <a href="/lecture/reg-lecture" class="btn btn-warning">강의 등록 신청</a>
-            <a href="/member/myLecture/teacher" class="btn btn-warning">내 강의</a>
-            <a href="/member/myInfo/teacher" class="btn btn-warning">내 정보</a>
-            <a href="/member/logout" class="btn btn-warning">로그아웃</a>
+            <nav class="top-menu">
+                <ul>
+                    <li>
+                        <a href="#">메뉴</a>
+                        <ul>
+                            <li><a href="/lecture/reg-lecture">강의 등록 신청</a></li>
+                            <li><a href="/member/myLecture/teacher">내 강의</a></li>
+                            <li><a href="/member/myInfo/teacher">내 정보</a></li>
+                            <li><a href="/member/logout">로그아웃</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
         </div>
-        <div th:if="${session.memberId==null&&session.teacherId==null&&session.adminId!=null}">
-            <a href="/admin/lecture/reg" class="btn btn-warning">강의 등록</a>
-            <a href="/member/logout" class="btn btn-warning">로그아웃</a>
+        <div th:if="${session.adminId!=null}">
+            <nav class="top-menu">
+                <ul>
+                    <li>
+                        <a href="#">메뉴</a>
+                        <ul>
+                            <li><a href="/admin/lecture/reg">강의 등록</a></li>
+                            <li><a href="/member/logout">로그아웃</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
         </div>
         <hr>
     </aside>
