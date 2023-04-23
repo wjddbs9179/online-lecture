@@ -30,6 +30,8 @@
     </tr>
   </table>
     <button style="text-align:right;" th:if="${session.adminId!=null}" type="button" class="btn btn-danger" th:onclick="|location.href='/admin/deleteLecture/${lecture.id}'|">삭제</button>
+    <button th:if="${session.memberId!=null}" class="btn btn-primary" type="button" th:onclick="|location.href='/lecture/review-write/${lecture.id}'|">수강평 작성</button>
+    <button class="btn btn-primary" type="button" th:onclick="|location.href='/lecture/review/read/${lecture.id}'|">수강평 보기</button>
   </div>
 </section>
 </body>

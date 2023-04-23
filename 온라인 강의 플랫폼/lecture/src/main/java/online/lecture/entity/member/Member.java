@@ -3,11 +3,14 @@ package online.lecture.entity.member;
 import lombok.Getter;
 import lombok.ToString;
 import online.lecture.entity.MemberLecture;
+import online.lecture.entity.Review;
 import online.lecture.member.controller.domain.UpdateMemberForm;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static javax.persistence.CascadeType.*;
 
 @Entity
 @Getter
@@ -22,8 +25,12 @@ public class Member {
     private String password;
     private String email;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", cascade = ALL)
     private List<MemberLecture> lectures = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Review> reviews = new ArrayList<>();
+
 
     protected Member(){
 

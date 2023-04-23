@@ -16,7 +16,6 @@ public class Video {
     @ManyToOne(fetch = LAZY)
     private Lecture lecture;
 
-    @NotBlank
     private String videoRoute;
 
     private String name;

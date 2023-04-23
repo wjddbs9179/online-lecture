@@ -2,11 +2,13 @@ package online.lecture.lecture.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import online.lecture.entity.Review;
 import online.lecture.entity.member.Member;
 import online.lecture.entity.MemberLecture;
 import online.lecture.entity.category.SubCategory;
 import online.lecture.entity.member.Teacher;
 import online.lecture.lecture.controller.domain.RegLectureForm;
+import online.lecture.lecture.controller.domain.ReviewWriteForm;
 import online.lecture.lecture.controller.file.FileStore;
 import online.lecture.lecture.controller.file.UploadFile;
 import online.lecture.entity.Lecture;
@@ -91,18 +93,19 @@ public class LectureController {
 
     @GetMapping("video/{id}")
     public String videoPlay(Model model, @PathVariable("id") Long id, HttpSession session) {
-        log.info("id = {} ", id);
         Video video = lectureService.findVideo(id);
 
         model.addAttribute("video", video);
-        if (!video.getLecture().getTeacher().getId().equals(session.getAttribute("teacherId"))) {
-            if (video != null) {
+        if(video.getLecture().getTeacher()!=null) {
+            if (video.getLecture().getTeacher().getId().equals(session.getAttribute("teacherId"))) {
                 return "lecture/video-play";
-            } else {
-                return "lecture/video-notPub";
             }
         }
-        return "lecture/video-play";
+
+        if(!video.getLecture().isPub())
+            return "lecture/video-notPub";
+        else
+            return "lecture/video-play";
     }
 
     @GetMapping("filter/{category}")
@@ -142,9 +145,7 @@ public class LectureController {
 
         if (adminId != null) {
             model.addAttribute("enrolment", true);
-        }
-
-        if (memberId != null) {
+        } else if (memberId != null) {
             Member member = memberService.info(memberId);
             MemberLecture ml = member.getLectures().stream()
                     .filter(memberLecture -> memberLecture.getMember().getId() == memberId
@@ -172,34 +173,77 @@ public class LectureController {
     }
 
     @GetMapping("next-video/{lectureId}/{videoId}")
-    public String nextVideo(Model model, @PathVariable("lectureId") Long lectureId, @PathVariable("videoId") Long videoId) {
+    public String nextVideo(Model model, @PathVariable("lectureId") Long lectureId, @PathVariable("videoId") Long videoId,HttpSession session) {
 
         Video video = lectureService.nextVideo(lectureId, videoId);
+        model.addAttribute("video", video);
 
         if (video == null)
             return "lecture/lastVideo";
 
+        if(video.getLecture().getTeacher().getId().equals((Long)session.getAttribute("teacherId"))){
+            return "lecture/video-play";
+        }
+
         if (!video.getLecture().isPub()) {
             return "lecture/video-notPub";
         }
 
-        model.addAttribute("video", video);
         return "lecture/video-play";
     }
 
     @GetMapping("prev-video/{lectureId}/{videoId}")
-    public String prevVideo(Model model, @PathVariable("lectureId") Long lectureId, @PathVariable("videoId") Long videoId) {
+    public String prevVideo(Model model, @PathVariable("lectureId") Long lectureId, @PathVariable("videoId") Long videoId,HttpSession session) {
         Video video = lectureService.prevVideo(lectureId, videoId);
+        model.addAttribute("video", video);
 
         if (video == null)
             return "lecture/firstVideo";
+
+        if(video.getLecture().getTeacher().getId().equals((Long)session.getAttribute("teacherId"))){
+            return "lecture/video-play";
+        }
 
         if (!video.getLecture().isPub()) {
             return "lecture/video-notPub";
         }
 
-        model.addAttribute("video", video);
         return "lecture/video-play";
+    }
+
+    @GetMapping("review-write/{lectureId}")
+    public String reviewWrite(@PathVariable("lectureId")Long lectureId,@ModelAttribute("form") ReviewWriteForm form){
+
+        return "lecture/review-write-form";
+    }
+
+    @PostMapping("review-write/{lectureId}")
+    public String reviewWrite(@PathVariable("lectureId")Long lectureId,HttpSession session,
+                              @Validated @ModelAttribute("form")ReviewWriteForm form,BindingResult br){
+
+        if(br.hasErrors())
+            return "lecture/review-write-form";
+
+        Review review = new Review();
+        Lecture lecture = lectureService.info(lectureId);
+        Long memberId = (Long) session.getAttribute("memberId");
+        Member member = memberService.info(memberId);
+        review.writeReview(lecture,member, form.getContent());
+
+        lectureService.reviewWrite(review);
+
+        return "redirect:/lecture/info/"+lectureId;
+    }
+
+    @GetMapping("review/read/{lectureId}")
+    public String reviewRead(@PathVariable("lectureId")Long lectureId,Model model){
+
+        List<Review> reviews = lectureService.findReviews(lectureId);
+
+        model.addAttribute("reviews",reviews);
+        model.addAttribute("lectureId",lectureId);
+
+        return "lecture/review-read";
     }
 
 }

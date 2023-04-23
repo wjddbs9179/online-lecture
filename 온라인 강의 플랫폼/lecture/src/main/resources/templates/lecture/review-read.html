@@ -1,10 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html th:replace="~{layout :: layout(~{::title}, ~{::section})}">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>강의 수강평 보기</title>
 </head>
 <body>
-$END$
+<section>
+  <div class="container">
+    <table class="table">
+      <tr><th>등록자</th><th>내용</th></tr>
+      <tr th:each="review : ${reviews}">
+        <td th:text="${review.member.userId.substring(0,review.member.userId.length()-3)+'***'}"></td>
+        <td th:text="${review.content}"></td>
+      </tr>
+    </table>
+
+    <button type="button" class="btn btn-success" th:onclick="|location.href='/lecture/info/${lectureId}'|">돌아가기</button>
+  </div>
+</section>
 </body>
 </html>

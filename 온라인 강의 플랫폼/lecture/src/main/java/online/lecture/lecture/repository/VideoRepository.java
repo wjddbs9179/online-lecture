@@ -18,7 +18,7 @@ public class VideoRepository {
     }
 
     public Video find(Long id) {
-        return em.createQuery("select v from Video v join fetch v.lecture where v.id=:id",Video.class)
+        return em.createQuery("select v from Video v where v.id=:id",Video.class)
                 .setParameter("id",id)
                 .getResultList().stream().findAny().orElse(null);
     }
