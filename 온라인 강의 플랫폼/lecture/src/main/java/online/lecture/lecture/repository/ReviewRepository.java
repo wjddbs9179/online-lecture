@@ -13,6 +13,11 @@ public class ReviewRepository {
 
     private final EntityManager em;
 
+    public Review find(Long reviewId) {
+        return em.createQuery("select r from Review r join fetch r.member join fetch r.lecture l join fetch l.teacher",Review.class)
+                .getResultList().stream().findAny().orElse(null);
+    }
+
     public void save(Review review){
         em.persist(review);
     }
@@ -21,5 +26,10 @@ public class ReviewRepository {
         return em.createQuery("select r from Review r join fetch r.member where r.lecture.id=:lectureId",Review.class)
                 .setParameter("lectureId",lectureId)
                 .getResultList();
+    }
+
+    public void delete(Long reviewId) {
+        Review review = em.find(Review.class, reviewId);
+        em.remove(review);
     }
 }

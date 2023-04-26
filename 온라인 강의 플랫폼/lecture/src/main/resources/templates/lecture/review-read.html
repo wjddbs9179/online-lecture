@@ -8,11 +8,43 @@
 <section>
   <div class="container">
     <table class="table">
-      <tr><th>등록자</th><th>내용</th></tr>
-      <tr th:each="review : ${reviews}">
+      <tr><th>등록자</th><th>내용</th><th>비고</th></tr>
+      <th:block th:each="review : ${reviews}">
+      <tr>
         <td th:text="${review.member.userId.substring(0,review.member.userId.length()-3)+'***'}"></td>
         <td th:text="${review.content}"></td>
+        <td>
+          <a th:if="${review.member.id==session.memberId}" class="btn btn-warning" th:href="|/lecture/review/update/${review.id}|">수정</a>
+          <a th:if="${review.member.id==session.memberId}" class="btn btn-warning" th:href="|/lecture/review/delete/${review.id}|">삭제</a>
+          <a th:if="${session.teacherId!=null}" class="btn btn-warning" th:href="|/lecture/review/teacherComment/write/${review.id}|">답글 작성</a>
+          <a th:if="${session.adminId!=null}" class="btn btn-warning" th:href="|/admin/review/adminComment/write/${review.id}|">답글 작성</a>
+        </td>
       </tr>
+        <th:block th:each="teacherComment : ${teacherComments}">
+          <tr th:if="${teacherComment.review.id==review.id}">
+            <td>강사 답글</td>
+            <td th:text="${teacherComment.content}"></td>
+            <td>
+              <a th:if="${teacherComment.teacher.id==session.teacherId}"
+                 th:href="|/lecture/teacherComment/update/${teacherComment.id}|" class="btn btn-warning">수정</a>
+              <a th:if="${teacherComment.teacher.id==session.teacherId}"
+                 th:href="|/lecture/teacherComment/delete/${teacherComment.id}|" class="btn btn-warning">삭제</a>
+            </td>
+          </tr>
+        </th:block>
+        <th:block th:each="adminComment : ${adminComments}">
+          <tr th:if="${adminComment.review.id==review.id}">
+            <td>관리자 답글</td>
+            <td th:text="${adminComment.content}"></td>
+            <td>
+              <a th:if="${session.adminId!=null}"
+                 th:href="|/admin/adminComment/update/${adminComment.id}|" class="btn btn-warning">수정</a>
+              <a th:if="${session.adminId!=null}"
+                 th:href="|/admin/adminComment/delete/${adminComment.id}|" class="btn btn-warning">삭제</a>
+            </td>
+          </tr>
+        </th:block>
+      </th:block>
     </table>
 
     <button type="button" class="btn btn-success" th:onclick="|location.href='/lecture/info/${lectureId}'|">돌아가기</button>

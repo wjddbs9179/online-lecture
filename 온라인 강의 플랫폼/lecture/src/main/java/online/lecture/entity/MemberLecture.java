@@ -4,6 +4,8 @@ import lombok.Getter;
 import online.lecture.entity.member.Member;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,11 +20,24 @@ public class MemberLecture {
     @JoinColumn(name = "lecture_id")
     private Lecture lecture;
 
+    @OneToMany(mappedBy = "memberLecture")
+    private List<MemberLectureVideo> watchedVideos = new ArrayList<>();
+
     private double progressRate;
+
+    public void setProgressRate(double progressRate) {
+        this.progressRate = progressRate;
+    }
 
     public MemberLecture(Member member, Lecture lecture) {
         this.member = member;
         this.lecture = lecture;
+    }
+
+    public MemberLectureVideo watchedVideosUpdate(Video video){
+        MemberLectureVideo memberLectureVideo = new MemberLectureVideo(this, video);
+        watchedVideos.add(memberLectureVideo);
+        return memberLectureVideo;
     }
 
     public MemberLecture() {

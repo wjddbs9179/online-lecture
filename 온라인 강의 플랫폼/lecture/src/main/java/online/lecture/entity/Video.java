@@ -11,6 +11,7 @@ import static javax.persistence.FetchType.*;
 @Getter
 public class Video {
     @Id @GeneratedValue
+    @Column(name = "video_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)

@@ -69,4 +69,10 @@ public class LectureRepository {
                 .executeUpdate();
         em.remove(lecture);
     }
+
+    public List<Video> getVideos(Long id) {
+        return em.createQuery("select v from Video v where v.lecture.id=:id",Video.class)
+                .setParameter("id",id)
+                .getResultList();
+    }
 }

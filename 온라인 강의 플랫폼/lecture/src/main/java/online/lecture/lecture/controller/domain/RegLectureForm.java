@@ -17,7 +17,6 @@ public class RegLectureForm {
     @NotBlank(message = "강의명을 입력해주세요")
     private String name;
 
-//    @NotBlank(message = "카테고리를 선택해주세요.")
     @NotNull(message = "카테고리를 선택해주세요.")
     private Category category;
 
@@ -25,7 +24,6 @@ public class RegLectureForm {
 
     private List<MultipartFile> imageFiles;
     @NotNull(message = "메인 이미지를 선택해주세요.")
-//    @NotBlank(message = "메인 이미지를 선택해주세요.")
     private MultipartFile attachFile;
 
     private List<MultipartFile> videoFiles;

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+  <meta charset="UTF-8">
+  <title>관리자 수강평 답글</title>
+</head>
+<body>
+<section>
+  <div class="container" style="width:800px;">
+    <h1 class="text-primary">관리자 답글 작성</h1>
+    <form th:object="${form}" action="" method="post">
+      <span><label><h4>내용</h4></label></span>
+      <textarea th:field="*{content}" cols="101" rows="15" ></textarea>
+      <button type="submit" class="btn btn-success" style="width:770px;">등록</button>
+    </form>
+  </div>
+</section>
+</body>
+</html>

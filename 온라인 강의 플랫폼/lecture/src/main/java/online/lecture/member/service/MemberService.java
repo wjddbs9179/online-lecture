@@ -99,7 +99,7 @@ public class MemberService {
         member.addLecture(memberLecture);
     }
 
-    public List<Lecture> myLecture(Long memberId) {
+    public List<MemberLecture> myLecture(Long memberId) {
 
         Member member = memberRepository.find(memberId);
         return memberLectureRepository.myLecture(member);

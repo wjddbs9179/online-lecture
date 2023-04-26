@@ -1,14 +1,20 @@
 package online.lecture.admin.controller;
 
 import lombok.RequiredArgsConstructor;
+import online.lecture.admin.controller.domain.AdminCommentUpdateForm;
+import online.lecture.admin.controller.domain.AdminCommentWriteForm;
 import online.lecture.admin.controller.domain.AdminLoginForm;
 import online.lecture.admin.service.AdminService;
+import online.lecture.entity.AdminComment;
 import online.lecture.entity.Lecture;
+import online.lecture.entity.TeacherComment;
 import online.lecture.entity.Video;
 import online.lecture.entity.category.SubCategory;
 import online.lecture.entity.member.Admin;
 import online.lecture.entity.member.Teacher;
 import online.lecture.lecture.controller.domain.RegLectureForm;
+import online.lecture.lecture.controller.domain.TeacherCommentUpdateForm;
+import online.lecture.lecture.controller.domain.TeacherCommentWriteForm;
 import online.lecture.lecture.controller.file.FileStore;
 import online.lecture.lecture.controller.file.UploadFile;
 import online.lecture.lecture.service.LectureService;
@@ -115,4 +121,68 @@ public class AdminController {
 
         return "redirect:/";
     }
+
+    @GetMapping("review/adminComment/write/{reviewId}")
+    public String teacherCommentWrite(@PathVariable("reviewId")Long reviewId, HttpSession session,Model model){
+
+        if(session.getAttribute("adminId")!=null){
+            model.addAttribute("form",new AdminCommentWriteForm());
+            return "admin/adminComment-write";
+        }else{
+            return "admin/adminComment-validAdmin-false";
+        }
+    }
+
+    @PostMapping("review/adminComment/write/{reviewId}")
+    public String teacherCommentWrite(@Validated @ModelAttribute("form") AdminCommentWriteForm form, BindingResult br,
+                                      @PathVariable("reviewId")Long reviewId,HttpSession session){
+
+        if(br.hasErrors())
+            return "admin/adminComment-write";
+
+        Long lectureId = adminService.adminCommentWrite(form.getContent(),reviewId,(Long)session.getAttribute("adminId"));
+        return "redirect:/lecture/review/read/"+lectureId;
+    }
+
+    @GetMapping("adminComment/update/{adminCommentId}")
+    public String teacherCommentUpdate(@PathVariable("adminCommentId")Long adminCommentId, HttpSession session,Model model){
+        Long adminId = (Long)session.getAttribute("adminId");
+
+        if(adminId!=null){
+            AdminComment adminComment = adminService.getAdminComment(adminCommentId);
+
+            model.addAttribute("form",new TeacherCommentUpdateForm(adminComment.getContent()));
+            return "admin/adminComment-update";
+        }else{
+            return "admin/adminComment-validAdmin-false";
+        }
+    }
+
+    @PostMapping("adminComment/update/{adminCommentId}")
+    public String teacherCommentUpdate(@Validated @ModelAttribute("form") AdminCommentUpdateForm form, BindingResult br,
+                                       @PathVariable("adminCommentId")Long adminCommentId, HttpSession session){
+        Long adminId = (Long)session.getAttribute("adminId");
+
+        if(adminId!=null){
+            if(br.hasErrors())
+                return "admin/adminComment-update";
+
+            Long lectureId = adminService.adminCommentUpdate(adminCommentId,form.getContent());
+            return "redirect:/lecture/review/read/"+lectureId;
+        }else{
+            return "admin/adminComment-validAdmin-false";
+        }
+    }
+    @GetMapping("adminComment/delete/{adminCommentId}")
+    public String teacherCommentDelete(@PathVariable("adminCommentId")Long adminCommentId,HttpSession session){
+        Long adminId = (Long)session.getAttribute("adminId");
+
+        if(adminId!=null){
+            Long lectureId = adminService.deleteAdminComment(adminCommentId);
+            return "redirect:/lecture/review/read/"+lectureId;
+        }else{
+            return "admin/adminComment-validAdmin-false";
+        }
+    }
+
 }

@@ -2,6 +2,7 @@ package online.lecture.member.controller;
 
 import lombok.RequiredArgsConstructor;
 import online.lecture.entity.Lecture;
+import online.lecture.entity.MemberLecture;
 import online.lecture.entity.member.Teacher;
 import online.lecture.lecture.controller.domain.RegLectureForm;
 import online.lecture.member.controller.domain.*;
@@ -13,6 +14,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -269,9 +272,9 @@ public class MemberController {
     @GetMapping("myLecture")
     public String myLecture(Model model, HttpSession session) {
         Long memberId = (Long) session.getAttribute("memberId");
-        List<Lecture> lectures = memberService.myLecture(memberId);
-        model.addAttribute("myLecture", lectures);
-        return "member/my-lecture";
+        List<MemberLecture> memberLectures = memberService.myLecture(memberId);
+        model.addAttribute("memberLectures", memberLectures);
+        return "member/my-lecture-member";
     }
 
     @GetMapping("myLecture/teacher")
@@ -279,6 +282,6 @@ public class MemberController {
         Long teacherId = (Long) session.getAttribute("teacherId");
         List<Lecture> lectures = memberService.myLectureTeacher(teacherId);
         model.addAttribute("myLecture",lectures);
-        return "member/my-lecture";
+        return "member/my-lecture-teacher";
     }
 }

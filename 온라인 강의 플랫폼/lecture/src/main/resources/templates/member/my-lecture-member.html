@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>내 학습</title>
+</head>
+<body>
+<section>
+    <div class="container">
+      <h1 class="text-primary">내 학습</h1>
+      <hr>
+        <div>
+            <div class="row">
+                <div class="col-md-4" th:each="memberLecture, iterStat :${memberLectures}">
+                    <div class="card">
+                        <a th:href="|/lecture/info/${memberLecture.lecture.id}|">
+                            <img class="card-img-top" style="width:350px;" height="260px;"
+                                 th:src="|/lecture/images/${memberLecture.lecture.imageRoute}|">
+                        </a>
+                        <div class="card-body">
+                            <a class="card-title" style="text-align:center;" th:href="|/lecture/info/${memberLecture.lecture.id}|"
+                               th:text="${memberLecture.lecture.name}"></a>
+                            <br>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped" role="progressbar" th:style="|width: ${memberLecture.progressRate*100}%;|"
+                                     aria-valuenow="${memberLecture.progressRate*100}" aria-valuemin="0" aria-valuemax="100">
+                                    <span th:text="|${memberLecture.progressRate*100}%|"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${iterStat.count} %3 == 0"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

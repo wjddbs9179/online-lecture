@@ -15,16 +15,15 @@ import java.util.List;
 public class MemberLectureRepository {
     private final EntityManager em;
 
-    public List<Lecture> myLecture(Member member){
+    public List<MemberLecture> myLecture(Member member){
         List<MemberLecture> memberLectures = em.createQuery("select ml from MemberLecture ml join fetch" +
                         " ml.lecture where ml.member=:member", MemberLecture.class)
                 .setParameter("member", member)
                 .getResultList();
-        List<Lecture> lectures = new ArrayList<>();
-        for (MemberLecture memberLecture : memberLectures) {
-            lectures.add(memberLecture.getLecture());
-        }
-        return lectures;
+        return memberLectures;
     }
 
+    public MemberLecture findById(Long id) {
+        return em.find(MemberLecture.class,id);
+    }
 }
