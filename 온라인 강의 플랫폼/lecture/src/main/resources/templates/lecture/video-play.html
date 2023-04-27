@@ -9,13 +9,7 @@
     <div style="width:800px;" class="container">
         <h3 th:text="${video.name}" class="text-primary"></h3>
         <hr>
-        <iframe th:if="${video.videoRoute.substring(0,5)=='https'}" width="770px" height="500px"
-                id="video-player-youtube"
-                th:src="${video.videoRoute}"
-                title="YouTube video player"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen></iframe>
+        <div id="player"></div>
 
         <video th:if="${video.videoRoute.substring(0,5)!='https'}" width="770px" height="500px" id="video-player"
                th:src="|/lecture/videoFile/${video.videoRoute}|" autoplay="autoplay" controls="controls">
@@ -24,7 +18,54 @@
         <a th:href="|/lecture/prev-video/${video.lecture.id}/${video.id}|" class="btn btn-info">이전 화</a>
         <a th:href="|/lecture/next-video/${video.lecture.id}/${video.id}|" class="btn btn-info">다음 화</a>
     </div>
-    <script th:inline="javascript">
+
+    <script th:if="${video.videoRoute.substring(0,5)=='https'}" src="https://www.youtube.com/iframe_api"></script>
+    <script th:if="${video.videoRoute.substring(0,5)=='https'}" th:inline="javascript">
+        var player;
+        var duration = 0;
+        var videoRoute = [[${video.videoRoute}]];
+        var videoRouteId = videoRoute.split('/').pop();
+        var currentTime = 0;
+        var watched = false;
+        var videoId = [[${video.id}]];
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                videoId: videoRouteId,
+                width:770,
+                height:500,
+                events: {
+                    'onReady': onPlayerReady,
+                }
+            });
+        }
+
+        function log() {
+            if (!watched) {
+                currentTime = player.getCurrentTime();
+                console.log(`총 재생 시간 : ${duration}`);
+                console.log(`현재 재생 시간 : ${currentTime}`);
+                if (currentTime / duration >= 0.99) {
+                    console.log("영상 시청 완료");
+                    fetch(`/lecture/video/watched/` + videoId, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    })
+                    watched = true;
+                }
+            }
+        }
+
+        function onPlayerReady(event) {
+            duration = player.getDuration();
+            player.playVideo();
+            setInterval(log,1000);
+        }
+    </script>
+
+    <script th:if="${video.videoRoute.substring(0,5)!='https'}" th:inline="javascript">
         // video 태그에서 id가 video-player인 요소를 가져옵니다.
         var video = document.getElementById("video-player");
         var watched = false;

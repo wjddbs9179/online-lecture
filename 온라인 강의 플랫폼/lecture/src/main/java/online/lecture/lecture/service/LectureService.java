@@ -143,14 +143,15 @@ public class LectureService {
     }
 
     public void memberLectureVideoSave(MemberLectureVideo memberLectureVideo) {
-        memberLectureVideoRepository.save(memberLectureVideo);
-        MemberLectureVideo findMemberLectureVideo = memberLectureVideoRepository.find(memberLectureVideo.getId());
-        MemberLecture memberLecture = findMemberLectureVideo.getMemberLecture();
+        memberLectureVideo = memberLectureVideoRepository.save(memberLectureVideo);
+        Long memberLectureId = memberLectureVideo.getMemberLecture().getId();
+        MemberLecture memberLecture = memberLectureRepository.findById(memberLectureId);
         double watchedVideoSize = (double)memberLecture.getWatchedVideos().size();
         log.info("watchedVideoSize = {}",watchedVideoSize);
-        double videosSize = (double) lectureRepository.getVideos(memberLecture.getLecture().getId()).size();
+        double videosSize = (double)memberLecture.getLecture().getVideos().size();
         log.info("videosSize = {}",videosSize);
-        memberLecture.setProgressRate(watchedVideoSize/videosSize);
-        log.info("memberLecture.progressRate = {}",memberLecture.getProgressRate());
+        double progressRate = watchedVideoSize/videosSize;
+        log.info("memberLecture.progressRate = {}",progressRate);
+        memberLectureRepository.progressRateUpdate(progressRate,memberLecture.getId());
     }
 }

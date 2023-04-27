@@ -187,7 +187,8 @@ public class LectureController {
             return "lecture/video-play";
         }
 
-        if (video.getLecture().getTeacher().getId().equals((Long) session.getAttribute("teacherId"))) {
+        if (video.getLecture().getTeacher()!=null
+                &&video.getLecture().getTeacher().getId().equals((Long) session.getAttribute("teacherId"))) {
             return "lecture/video-play";
         }
 
@@ -210,7 +211,7 @@ public class LectureController {
             return "lecture/video-play";
         }
 
-        if (video.getLecture().getTeacher().getId().equals((Long) session.getAttribute("teacherId"))) {
+        if (video.getLecture().getTeacher()!=null&&video.getLecture().getTeacher().getId().equals((Long) session.getAttribute("teacherId"))) {
             return "lecture/video-play";
         }
 

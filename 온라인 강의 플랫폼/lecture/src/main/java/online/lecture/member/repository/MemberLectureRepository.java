@@ -26,4 +26,11 @@ public class MemberLectureRepository {
     public MemberLecture findById(Long id) {
         return em.find(MemberLecture.class,id);
     }
+
+    public void progressRateUpdate(double progressRate,Long memberLectureId) {
+        em.createQuery("update MemberLecture ml set ml.progressRate=:progressRate where ml.id=:id")
+                .setParameter("progressRate",progressRate)
+                .setParameter("id",memberLectureId)
+                .executeUpdate();
+    }
 }
