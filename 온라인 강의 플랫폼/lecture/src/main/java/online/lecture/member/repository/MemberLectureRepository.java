@@ -29,7 +29,7 @@ public class MemberLectureRepository {
 
     public void progressRateUpdate(double progressRate,Long memberLectureId) {
         em.createQuery("update MemberLecture ml set ml.progressRate=:progressRate where ml.id=:id")
-                .setParameter("progressRate",progressRate)
+                .setParameter("progressRate",(double)Math.round(progressRate*10000)/10000)
                 .setParameter("id",memberLectureId)
                 .executeUpdate();
     }

@@ -25,6 +25,17 @@ public class MemberLecture {
 
     private double progressRate;
 
+    private Long LastWatchedVideoId;
+    private int LastWatchedVideoTime;
+
+    public void setLastWatchedVideoId(Long lastWatchedVideoId) {
+        LastWatchedVideoId = lastWatchedVideoId;
+    }
+
+    public void setLastWatchedVideoTime(int lastWatchedVideoTime) {
+        LastWatchedVideoTime = lastWatchedVideoTime;
+    }
+
     public void setProgressRate(double progressRate) {
         this.progressRate = progressRate;
     }

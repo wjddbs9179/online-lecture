@@ -63,6 +63,16 @@
             player.playVideo();
             setInterval(log,1000);
         }
+
+        window.onbeforeunload = function () {
+            fetch(`/lecture/video/lastWatchedVideo/save/` + videoId, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+            watched = true;
+        }
     </script>
 
     <script th:if="${video.videoRoute.substring(0,5)!='https'}" th:inline="javascript">
