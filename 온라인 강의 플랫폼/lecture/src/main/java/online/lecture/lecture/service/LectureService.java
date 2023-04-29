@@ -154,4 +154,12 @@ public class LectureService {
         log.info("memberLecture.progressRate = {}",progressRate);
         memberLectureRepository.progressRateUpdate(progressRate,memberLecture.getId());
     }
+
+    public void lastWatchedVideoSave(Long memberId, Long videoId, double currentTime) {
+        Long lectureId = lectureRepository.findIdByVideo(videoId);
+        MemberLecture memberLecture = memberLectureRepository.findByMemberAndLecture(memberId,lectureId);
+
+        memberLecture.setLastWatchedVideoId(videoId);
+        memberLecture.setLastWatchedVideoTime(currentTime);
+    }
 }

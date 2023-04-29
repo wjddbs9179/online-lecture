@@ -75,4 +75,12 @@ public class LectureRepository {
                 .setParameter("id",id)
                 .getResultList();
     }
+
+    public Long findIdByVideo(Long videoId) {
+        Video video = em.createQuery("select v from Video v where v.id = :videoId", Video.class)
+                .setParameter("videoId", videoId)
+                .getResultList().stream().findAny().orElse(null);
+
+        return video.getLecture().getId();
+    }
 }

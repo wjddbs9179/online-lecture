@@ -33,4 +33,11 @@ public class MemberLectureRepository {
                 .setParameter("id",memberLectureId)
                 .executeUpdate();
     }
+
+    public MemberLecture findByMemberAndLecture(Long memberId, Long lectureId) {
+        return em.createQuery("select ml from MemberLecture ml where ml.member.id=:memberId and ml.lecture.id=:lectureId",MemberLecture.class)
+                .setParameter("memberId",memberId)
+                .setParameter("lectureId",lectureId)
+                .getResultList().stream().findAny().orElse(null);
+    }
 }

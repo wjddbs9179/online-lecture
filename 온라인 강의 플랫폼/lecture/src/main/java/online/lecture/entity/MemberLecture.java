@@ -26,13 +26,13 @@ public class MemberLecture {
     private double progressRate;
 
     private Long LastWatchedVideoId;
-    private int LastWatchedVideoTime;
+    private double LastWatchedVideoTime;
 
     public void setLastWatchedVideoId(Long lastWatchedVideoId) {
         LastWatchedVideoId = lastWatchedVideoId;
     }
 
-    public void setLastWatchedVideoTime(int lastWatchedVideoTime) {
+    public void setLastWatchedVideoTime(double lastWatchedVideoTime) {
         LastWatchedVideoTime = lastWatchedVideoTime;
     }
 

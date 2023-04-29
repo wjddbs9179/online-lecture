@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/lecture/")
@@ -399,5 +400,32 @@ public class LectureController {
 
         log.info("videoId = {}",videoId);
         return "ok";
+    }
+
+    @PutMapping("video/lastWatchedVideo/save")
+    @ResponseBody
+    public String lastWatchedVideoSave(@RequestBody Map<String, String> data,HttpSession session){
+        Long videoId = Long.valueOf(data.get("videoId"));
+        double currentTime = Double.parseDouble(data.get("currentTime"));
+        Long memberId = (Long)session.getAttribute("memberId");
+
+        lectureService.lastWatchedVideoSave(memberId,videoId,currentTime);
+
+        return "ok";
+    }
+
+    @GetMapping("video/replay/{lectureId}")
+    public String replay(@PathVariable("lectureId")Long lectureId,HttpSession session,Model model){
+        Long memberId = (Long)session.getAttribute("memberId");
+        MemberLecture memberLecture = memberService.getMemberLecture(memberId,lectureId);
+        if(memberLecture!=null) {
+            Long lastWatchedVideoId = memberLecture.getLastWatchedVideoId();
+
+            model.addAttribute("video", lectureService.findVideo(lastWatchedVideoId));
+            model.addAttribute("lastWatchedVideoTime", memberLecture.getLastWatchedVideoTime());
+            return "lecture/video-play";
+        }else {
+            return "lecture/video-not-enrolment";
+        }
     }
 }

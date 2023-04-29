@@ -122,4 +122,7 @@ public class MemberService {
         return lectureRepository.myLectureTeacher(teacherId);
     }
 
+    public MemberLecture getMemberLecture(Long memberId, Long lectureId) {
+        return memberLectureRepository.findByMemberAndLecture(memberId,lectureId);
+    }
 }

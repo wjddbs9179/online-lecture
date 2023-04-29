@@ -28,12 +28,16 @@
         var currentTime = 0;
         var watched = false;
         var videoId = [[${video.id}]];
+        var lastWatchedVideoTime = [[${lastWatchedVideoTime}]]!=null?[[${lastWatchedVideoTime}]]:0;
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
                 videoId: videoRouteId,
                 width:770,
                 height:500,
+                playerVars: {
+                    'start': lastWatchedVideoTime
+                },
                 events: {
                     'onReady': onPlayerReady,
                 }
@@ -43,8 +47,8 @@
         function log() {
             if (!watched) {
                 currentTime = player.getCurrentTime();
-                console.log(`총 재생 시간 : ${duration}`);
-                console.log(`현재 재생 시간 : ${currentTime}`);
+                // console.log(`총 재생 시간 : ${duration}`);
+                // console.log(`현재 재생 시간 : ${currentTime}`);
                 if (currentTime / duration >= 0.99) {
                     console.log("영상 시청 완료");
                     fetch(`/lecture/video/watched/` + videoId, {
@@ -65,11 +69,19 @@
         }
 
         window.onbeforeunload = function () {
-            fetch(`/lecture/video/lastWatchedVideo/save/` + videoId, {
+            // 전송할 데이터를 객체로 생성
+            const data = {
+                videoId: videoId,
+                currentTime: currentTime
+            };
+
+            // PUT 요청 보내기
+            fetch(`/lecture/video/lastWatchedVideo/save`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                body: JSON.stringify(data) // 데이터를 JSON 형식으로 변환하여 전송
             })
             watched = true;
         }
@@ -80,12 +92,15 @@
         var video = document.getElementById("video-player");
         var watched = false;
         var videoId = [[${video.id}]];
+        var currentTime = 0;
+        var lastWatchedVideoTime = [[${lastWatchedVideoTime}]]!=null?[[${lastWatchedVideoTime}]]:0;
+        video.currentTime = lastWatchedVideoTime;
         video.addEventListener("canplay", function () {
             // 총 재생시간을 가져옵니다. (초 단위)
             var duration = video.duration;
 
             // 현재 재생 시간을 가져옵니다. (초 단위)
-            var currentTime = video.currentTime;
+            currentTime = video.currentTime;
 
             function updateTime() {
                 currentTime = video.currentTime;
@@ -93,8 +108,8 @@
 
             function log() {
                 if (!watched) {
-                    console.log(`총 재생 시간 : ${duration}`);
-                    console.log(`현재 재생 시간 : ${currentTime}`);
+                    // console.log(`총 재생 시간 : ${duration}`);
+                    // console.log(`현재 재생 시간 : ${currentTime}`);
                     if (currentTime / duration >= 0.99) {
                         console.log("영상 시청 완료");
                         fetch(`/lecture/video/watched/` + videoId, {
@@ -111,6 +126,24 @@
             video.addEventListener("timeupdate", updateTime)
             setInterval(log, 1000);
         });
+
+        window.onbeforeunload = function () {
+            // 전송할 데이터를 객체로 생성
+            const data = {
+                videoId: videoId,
+                currentTime: currentTime
+            };
+
+            // PUT 요청 보내기
+            fetch(`/lecture/video/lastWatchedVideo/save`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data) // 데이터를 JSON 형식으로 변환하여 전송
+            })
+            watched = true;
+        }
     </script>
 </section>
 </body>

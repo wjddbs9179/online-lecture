@@ -14,6 +14,9 @@
     <button th:if="${session.adminId!=null&&!lecture.pub}" type="button" class="btn btn-success" th:onclick="|location.href='/admin/pubTrue/${lecture.id}'|">공개</button>
     <button th:if="${session.adminId!=null&&lecture.pub}" type="button" class="btn btn-success" th:onclick="|location.href='/admin/pubFalse/${lecture.id}'|">비공개</button>
   <table class="table">
+    <tr th:if="${enrolment && session.adminId==null && session.teacherId==null}">
+      <th colspan="2"><a th:href="|/lecture/video/replay/${lecture.id}|" type="button" class="btn btn-success">시청재게</a></th>
+    </tr>
     <tr>
       <td>강의 명</td>
       <td th:text="${lecture.name}"></td>
