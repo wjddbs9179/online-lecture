@@ -15,6 +15,7 @@ public class Video {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "lecture_id")
     private Lecture lecture;
 
     private String videoRoute;
