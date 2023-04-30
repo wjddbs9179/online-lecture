@@ -41,10 +41,14 @@
 							<input class="form-control" type="email" th:field="*{email}" th:errorclass="field-error-input">
                             <div class="field-error" th:errors="*{email}"></div>
                         </div>
-                        <div>
+                        <div style="text-align:center; width:500px;">
                             <h3><label>회원 구분</label></h3>
-                            <input type="radio" name="memberDivision" value="basic" checked="checked">일반
-                            <input type="radio" name="memberDivision" value="teacher">강사
+                            <table style="width:500px;">
+                                <tr>
+                                    <th style="padding:20px; text-align:center;"><input type="radio" name="memberDivision" value="basic" checked="checked">일반</th>
+                                    <th style="padding:20px; text-align:center;"><input type="radio" name="memberDivision" value="teacher">강사</th>
+                                </tr>
+                            </table>
                         </div>
                     </div>
 
