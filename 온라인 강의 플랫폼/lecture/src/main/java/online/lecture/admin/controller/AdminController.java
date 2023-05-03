@@ -93,14 +93,20 @@ public class AdminController {
     }
 
     @PostMapping("lecture/reg")
-    public String regLecture(@Validated @ModelAttribute("form") RegLectureForm form, BindingResult br, @RequestParam("subCategory")String subCategory, HttpServletRequest request, HttpSession session) throws IOException {
+    public String regLecture(@Validated @ModelAttribute("form") RegLectureForm form, BindingResult br, @RequestParam(value = "subCategory",defaultValue = "")String subCategory, HttpServletRequest request, HttpSession session) throws IOException {
+        SubCategory realSubCategory = form.getCategory().getSubCategories().stream().filter(sc -> sc.getKorName().equals(subCategory)).findAny().orElse(null);
+
+        if(realSubCategory==null)
+            return "lecture/empty-subCategory";
 
         if(br.hasErrors()){
             return "lecture/reg-form";
         }
 
         UploadFile attachFile = fileStore.storeFile(form.getAttachFile());
-        SubCategory realSubCategory = form.getCategory().getSubCategories().stream().filter(sc -> sc.getKorName().equals(subCategory)).findAny().orElse(null);
+
+        if(attachFile==null)
+            return "lecture/attachFile-null";
 
         Lecture lecture = new Lecture(form.getName(),form.getCategory(),realSubCategory,attachFile.getStoreFilename(),form.getIntro(),null);
 
@@ -112,7 +118,11 @@ public class AdminController {
         List<Video> videos = new ArrayList<>();
         for(String videoRoute : videoRoutes){
             Video video = new Video();
+            if(videoNames[videoNameCount].equals(""))
+                return "lecture/empty-videoName";
             video.setName(videoNames[videoNameCount++]);
+            if(videoRoute.equals(""))
+                return "lecture/empty-videoRoute";
             video.setVideoRoute(videoRoute);
             lecture.addVideo(video);
             videos.add(video);

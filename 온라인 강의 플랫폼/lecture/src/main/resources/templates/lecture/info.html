@@ -7,27 +7,20 @@
 <body>
 <section>
   <div class="container">
-  <h1 class="text-info">강의 상세 정보</h1>
     <button th:if="${!enrolment&&session.teacherId==null}" type="button" class="btn btn-success" th:onclick="|location.href='/member/Enrolment/${lecture.id}'|">
       수강신청
     </button>
     <button th:if="${session.adminId!=null&&!lecture.pub}" type="button" class="btn btn-success" th:onclick="|location.href='/admin/pubTrue/${lecture.id}'|">공개</button>
     <button th:if="${session.adminId!=null&&lecture.pub}" type="button" class="btn btn-success" th:onclick="|location.href='/admin/pubFalse/${lecture.id}'|">비공개</button>
-  <table class="table">
+    <h2 class="text-info" th:text="${lecture.name}"></h2>
+    <p th:text="${lecture.intro}"></p>
+    <table class="table">
     <tr th:if="${enrolment && session.adminId==null && session.teacherId==null}">
       <th colspan="2"><a th:href="|/lecture/video/replay/${lecture.id}|" type="button" class="btn btn-success">시청재게</a></th>
     </tr>
-    <tr>
-      <td>강의 명</td>
-      <td th:text="${lecture.name}"></td>
-    </tr>
-    <tr>
-      <td>강의 소개</td>
-      <td th:text="${lecture.intro}"></td>
-    </tr>
     <tr><td colspan="2">목차</td></tr>
-    <tr th:each="video : ${lecture.videos}" >
-      <td>회차 명</td>
+    <tr th:each="video, iterStat : ${lecture.videos}" >
+      <td th:text="${iterStat.count}">회차 명</td>
       <td th:if="${!enrolment}" th:text="${video.name}"></td>
       <td th:if="${enrolment}"><a th:href="|/lecture/video/${video.id}|" th:text="${video.name}"></a></td>
     </tr>

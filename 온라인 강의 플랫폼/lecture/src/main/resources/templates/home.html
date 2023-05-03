@@ -6,35 +6,49 @@
 </head>
 <body>
 <section>
+    <form action="" style="text-align:center;">
+        <input type="text" name="nameQuery" style="text-align:center; width:600px; height:35px; border-radius:40px;"
+               placeholder="필요한 강의명을 검색하세요." th:value="${param.nameQuery}">
+        <button type="submit" class="btn btn-success">검색</button>
+    </form>
+    <hr>
     <div style="width:1050px;" class="container">
         <nav class="top-menu">
             <ul>
                 <li th:each="category : ${T(online.lecture.entity.category.Category).values()}">
-                    <a th:href="|/lecture/filter/${category.name()}|" th:text="${category.korName}">개발 · 프로그래밍</a>
+                    <a th:href="|/?category=${category.name()}|" th:text="${category.korName}">개발 · 프로그래밍</a>
                     <ul>
                         <li th:each="subCategory:${category.getSubCategories()}">
-                            <a th:href="|/lecture/filter/${subCategory.name()}|" th:text="${subCategory.korName}">웹 개발</a>
+                            <a th:href="|/?category=${subCategory.name()}|" th:text="${subCategory.korName}">웹
+                                개발</a>
                         </li>
                     </ul>
                 </li>
             </ul>
         </nav>
         <hr>
-        <h4 class="text-info">최신 강의</h4>
+        <h4 th:if="${nowCategory.equals('')}" class="text-info">최신 강의</h4>
+        <h4 th:if="${!nowCategory.equals('')}" class="text-info" th:text="${nowCategory.korName}"></h4>
         <div>
             <div class="row">
                 <div class="col-md-4" th:each="lecture, iterStat :${recentLecture}">
                     <div class="card">
                         <a th:href="|/lecture/info/${lecture.id}|">
-                            <img class="card-img-top" style="width:280px;" height="220px;" th:src="|/lecture/images/${lecture.imageRoute}|">
+                            <img class="card-img-top" style="width:280px;" height="220px;"
+                                 th:src="|/lecture/images/${lecture.imageRoute}|">
                         </a>
                         <div class="card-body">
-                            <a class="card-title" style="text-align:center;" th:href="|/lecture/info/${lecture.id}|" th:text="${lecture.name}"></a>
+                            <a class="card-title" style="text-align:center;" th:href="|/lecture/info/${lecture.id}|"
+                               th:text="${lecture.name}"></a>
                         </div>
                     </div>
                     <div th:if="${iterStat.count} %3 == 0"></div>
                 </div>
             </div>
+        </div>
+        <div style="text-align:center;">
+            <a th:if="${page>5}" class="btn btn-info" th:href="|/?category=${nowCategory}&nameQuery=${nameQuery}&page=${page/5+4}|">≪</a>
+            <a th:if="${page}" class="btn btn-info" th:href="|/?category=${nowCategory}&nameQuery=${nameQuery}&page=${page%5}|">ㄷ</a>
         </div>
     </div>
 </section>

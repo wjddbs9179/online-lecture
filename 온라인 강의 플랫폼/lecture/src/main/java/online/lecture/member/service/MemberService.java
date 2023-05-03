@@ -96,6 +96,8 @@ public class MemberService {
         Lecture lecture = lectureRepository.find(lectureId);
 
         MemberLecture memberLecture = new MemberLecture(member,lecture);
+        Long firstVideoId = lectureRepository.findFirstVideoByLectureId(lecture);
+        memberLecture.setLastWatchedVideoId(firstVideoId);
         member.addLecture(memberLecture);
     }
 

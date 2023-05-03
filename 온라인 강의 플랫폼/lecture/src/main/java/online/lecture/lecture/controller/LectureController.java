@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import online.lecture.admin.service.AdminService;
 import online.lecture.entity.*;
+import online.lecture.entity.category.Category;
 import online.lecture.entity.member.Member;
 import online.lecture.entity.category.SubCategory;
 import online.lecture.entity.member.Teacher;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -49,11 +51,12 @@ public class LectureController {
     }
 
     @PostMapping("reg-lecture")
-    public String regLecture(@Validated @ModelAttribute("form") RegLectureForm form, BindingResult br, @RequestParam("subCategory") String subCategory, HttpServletRequest request, HttpSession session) throws IOException {
+    public String regLecture(@Validated @ModelAttribute("form") RegLectureForm form, BindingResult br, @RequestParam(value = "subCategory", defaultValue = "") String subCategory, HttpServletRequest request, HttpSession session) throws IOException {
 
-        if (form.getAttachFile() == null) {
-            br.rejectValue("attachFile", null, "메인 이미지를 선택해주세요.");
-        }
+        SubCategory realSubCategory = form.getCategory().getSubCategories().stream().filter(sc -> sc.getKorName().equals(subCategory)).findAny().orElse(null);
+
+        if(realSubCategory==null)
+            return "lecture/empty-subCategory";
 
         if (br.hasErrors())
             return "lecture/reg-form";
@@ -65,12 +68,9 @@ public class LectureController {
         UploadFile attachFile = fileStore.storeFile(form.getAttachFile());
         List<UploadFile> videoFiles = fileStore.storeFiles(form.getVideoFiles());
 
+        if(attachFile==null)
+            return "lecture/attachFile-null";
 
-        SubCategory realSubCategory = null;
-
-        if (form.getCategory().getSubCategories() != null) {
-            realSubCategory = form.getCategory().getSubCategories().stream().filter(sc -> sc.getKorName().equals(subCategory)).findAny().orElse(null);
-        }
         Lecture lecture = new Lecture(form.getName(), form.getCategory(), realSubCategory, attachFile.getStoreFilename(), form.getIntro(), teacher);
 
         lecture.setPub(false);
@@ -111,14 +111,7 @@ public class LectureController {
             return "lecture/video-play";
     }
 
-    @GetMapping("filter/{category}")
-    public String homeFilter(Model model, @PathVariable("category") String category) {
-        List<Lecture> recentLecture = lectureService.filter(category);
 
-        model.addAttribute("fileDir", fileDir);
-        model.addAttribute("recentLecture", recentLecture);
-        return "home";
-    }
 
     @ResponseBody
     @GetMapping("images/{filename}")
@@ -423,6 +416,7 @@ public class LectureController {
 
             model.addAttribute("video", lectureService.findVideo(lastWatchedVideoId));
             model.addAttribute("lastWatchedVideoTime", memberLecture.getLastWatchedVideoTime());
+            log.info("lastWatchedVideoTime = {}",memberLecture.getLastWatchedVideoTime());
             return "lecture/video-play";
         }else {
             return "lecture/video-not-enrolment";

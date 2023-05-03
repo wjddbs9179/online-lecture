@@ -14,7 +14,8 @@ public class ReviewRepository {
     private final EntityManager em;
 
     public Review find(Long reviewId) {
-        return em.createQuery("select r from Review r join fetch r.member join fetch r.lecture l join fetch l.teacher",Review.class)
+        return em.createQuery("select r from Review r where r.id=:reviewId",Review.class)
+                .setParameter("reviewId",reviewId)
                 .getResultList().stream().findAny().orElse(null);
     }
 

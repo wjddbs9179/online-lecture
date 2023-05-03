@@ -17,35 +17,40 @@ public class LectureRepository {
 
     private final EntityManager em;
 
-    public List<Lecture> recentLecture() {
-        return em.createQuery("select l from Lecture l where pub=true order by id desc", Lecture.class)
-                .setMaxResults(9)
-                .setFirstResult(0)
-                .getResultList();
-    }
-
     public void save(Lecture lecture) {
         em.persist(lecture);
     }
 
     public Lecture find(Long id) {
-        return em.createQuery("select l from Lecture l join fetch l.videos where l.id=:id", Lecture.class)
+        return em.createQuery("select l from Lecture l where l.id=:id", Lecture.class)
                 .setParameter("id", id)
                 .getResultList().stream().findAny().orElse(null);
     }
 
-    public List<Lecture> filter(String category) {
+    public List<Lecture> filter(String category,String nameQuery,int page) {
 
+        if(category.equals("")){
+            return em.createQuery("select l from Lecture l where pub=true and l.name like concat('%',:nameQuery,'%')",Lecture.class)
+                    .setParameter("nameQuery",nameQuery)
+                    .setFirstResult((page-1)*3)
+                    .setMaxResults(3)
+                    .getResultList();
+        }
         Category mainCategory = Arrays.stream(Category.values()).filter(c -> c.name().equals(category)).findAny().orElse(null);
-
         if (mainCategory != null) {
-            return em.createQuery("select l from Lecture l where category=:category and pub=true",Lecture.class)
+            return em.createQuery("select l from Lecture l where l.category=:category and pub=true and l.name like concat('%',:nameQuery,'%')",Lecture.class)
+                    .setParameter("nameQuery",nameQuery)
                     .setParameter("category",mainCategory)
+                    .setFirstResult((page-1)*3)
+                    .setMaxResults(3)
                     .getResultList();
         }else {
             SubCategory subCategory = Arrays.stream(SubCategory.values()).filter(sc -> sc.name().equals(category)).findAny().orElse(null);
-            return em.createQuery("select l from Lecture l where subCategory=:subCategory and pub=true",Lecture.class)
+            return em.createQuery("select l from Lecture l where l.subCategory=:subCategory and pub=true and l.name like concat('%',:nameQuery,'%') ",Lecture.class)
+                    .setParameter("nameQuery",nameQuery)
                     .setParameter("subCategory",subCategory)
+                    .setFirstResult((page-1)*3)
+                    .setMaxResults(3)
                     .getResultList();
         }
 
@@ -82,5 +87,40 @@ public class LectureRepository {
                 .getResultList().stream().findAny().orElse(null);
 
         return video.getLecture().getId();
+    }
+
+    public Long findFirstVideoByLectureId(Lecture lecture) {
+        return em.createQuery("select v from Video v where v.lecture=:lecture order by id",Video.class)
+                .setParameter("lecture",lecture)
+                .setMaxResults(1)
+                .getResultList().stream().findAny().orElse(null).getId();
+
+    }
+
+    public int getCount(String category, String nameQuery, int page) {
+        if(category.equals("")){
+            return em.createQuery("select count(l) from Lecture l where pub=true and l.name like concat('%',:nameQuery,'%')",Integer.class)
+                    .setParameter("nameQuery",nameQuery)
+                    .setFirstResult((page-1)*3)
+                    .setMaxResults(3)
+                    .getResultList().stream().findAny().orElse(0);
+        }
+        Category mainCategory = Arrays.stream(Category.values()).filter(c -> c.name().equals(category)).findAny().orElse(null);
+        if (mainCategory != null) {
+            return em.createQuery("select count(l) from Lecture l where l.category=:category and pub=true and l.name like concat('%',:nameQuery,'%')",Integer.class)
+                    .setParameter("nameQuery",nameQuery)
+                    .setParameter("category",mainCategory)
+                    .setFirstResult((page-1)*3)
+                    .setMaxResults(3)
+                    .getResultList().stream().findAny().orElse(0);
+        }else {
+            SubCategory subCategory = Arrays.stream(SubCategory.values()).filter(sc -> sc.name().equals(category)).findAny().orElse(null);
+            return em.createQuery("select l from Lecture l where l.subCategory=:subCategory and pub=true and l.name like concat('%',:nameQuery,'%') ",Integer.class)
+                    .setParameter("nameQuery",nameQuery)
+                    .setParameter("subCategory",subCategory)
+                    .setFirstResult((page-1)*3)
+                    .setMaxResults(3)
+                    .getResultList().stream().findAny().orElse(0);
+        }
     }
 }

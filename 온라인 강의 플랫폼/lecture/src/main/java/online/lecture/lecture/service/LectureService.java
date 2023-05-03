@@ -41,9 +41,6 @@ public class LectureService {
         return video;
     }
 
-    public List<Lecture> recentLecture() {
-        return lectureRepository.recentLecture();
-    }
 
     public Lecture info(Long id) {
         Lecture lecture = lectureRepository.find(id);
@@ -69,8 +66,8 @@ public class LectureService {
         return video;
     }
 
-    public List<Lecture> filter(String category) {
-        return lectureRepository.filter(category);
+    public List<Lecture> filter(String category,String nameQuery,int page) {
+        return lectureRepository.filter(category,nameQuery,page);
     }
 
     public void reviewWrite(Review review) {
@@ -161,5 +158,9 @@ public class LectureService {
 
         memberLecture.setLastWatchedVideoId(videoId);
         memberLecture.setLastWatchedVideoTime(currentTime);
+    }
+
+    public int getLectureCount(String category, String nameQuery, int page) {
+        return lectureRepository.getCount(category,nameQuery,page);
     }
 }
