@@ -55,7 +55,7 @@ public class LectureController {
 
         SubCategory realSubCategory = form.getCategory().getSubCategories().stream().filter(sc -> sc.getKorName().equals(subCategory)).findAny().orElse(null);
 
-        if(realSubCategory==null)
+        if (realSubCategory == null)
             return "lecture/empty-subCategory";
 
         if (br.hasErrors())
@@ -68,7 +68,7 @@ public class LectureController {
         UploadFile attachFile = fileStore.storeFile(form.getAttachFile());
         List<UploadFile> videoFiles = fileStore.storeFiles(form.getVideoFiles());
 
-        if(attachFile==null)
+        if (attachFile == null)
             return "lecture/attachFile-null";
 
         Lecture lecture = new Lecture(form.getName(), form.getCategory(), realSubCategory, attachFile.getStoreFilename(), form.getIntro(), teacher);
@@ -110,7 +110,6 @@ public class LectureController {
         else
             return "lecture/video-play";
     }
-
 
 
     @ResponseBody
@@ -181,8 +180,8 @@ public class LectureController {
             return "lecture/video-play";
         }
 
-        if (video.getLecture().getTeacher()!=null
-                &&video.getLecture().getTeacher().getId().equals((Long) session.getAttribute("teacherId"))) {
+        if (video.getLecture().getTeacher() != null
+                && video.getLecture().getTeacher().getId().equals((Long) session.getAttribute("teacherId"))) {
             return "lecture/video-play";
         }
 
@@ -191,6 +190,60 @@ public class LectureController {
         }
 
         return "lecture/video-play";
+    }
+
+    @GetMapping("update/{lectureId}")
+    public String update(@PathVariable("lectureId") Long lectureId, HttpSession session, Model model) {
+        Long teacherId = (Long) session.getAttribute("teacherId");
+        Lecture lecture = lectureService.info(lectureId);
+
+        if (lecture.getTeacher().getId() == teacherId) {
+            model.addAttribute("form", UpdateLectureForm.createForm(lecture));
+            return "lecture/update";
+        } else {
+            return "lecture/teacherComment-validTeacher-false";
+        }
+    }
+
+    @PostMapping("update/{lectureId}")
+    public String update(@RequestParam(value = "subCategory", defaultValue = "") String subCategory, @PathVariable("lectureId") Long lectureId, @Validated @ModelAttribute("form") UpdateLectureForm form, BindingResult br, HttpSession session, HttpServletRequest request) throws IOException {
+        Long teacherId = (Long) session.getAttribute("teacherId");
+        Lecture lecture = lectureService.info(lectureId);
+
+        SubCategory realSubCategory = form.getCategory().getSubCategories().stream().filter(sc -> sc.getKorName().equals(subCategory)).findAny().orElse(null);
+
+        if (realSubCategory == null)
+            return "lecture/empty-subCategory";
+
+        if (lecture.getTeacher().getId() == teacherId) {
+            if (br.hasErrors()) {
+                log.info("errors={}", br.getAllErrors());
+                return "lecture/update";
+            } else {
+                //정상 실행 로직
+                if(!form.getImageFile().isEmpty()) {
+                    UploadFile imageFile = fileStore.storeFile(form.getImageFile());
+                    form.setImageRoute(imageFile.getStoreFilename());
+                }
+                List<UploadFile> videoFiles = fileStore.storeFiles(form.getVideoFiles());
+                String[] videoNames = request.getParameterValues("videoName");
+                List<Video> videos = new ArrayList<>();
+                int videoFileCount = 0;
+                for (String videoName : videoNames) {
+                    Video video = new Video();
+                    video.setName(videoName);
+                    video.setLecture(lecture);
+                    video.setVideoRoute(videoFiles.get(videoFileCount++).getStoreFilename());
+                    lecture.addVideo(video);
+                    videos.add(video);
+                }
+
+                lectureService.lectureUpdate(lectureId, form, videos, realSubCategory);
+            }
+            return "redirect:/lecture/info/" + lectureId;
+        } else {
+            return "lecture/teacherComment-validTeacher-false";
+        }
     }
 
     @GetMapping("prev-video/{lectureId}/{videoId}")
@@ -205,7 +258,7 @@ public class LectureController {
             return "lecture/video-play";
         }
 
-        if (video.getLecture().getTeacher()!=null&&video.getLecture().getTeacher().getId().equals((Long) session.getAttribute("teacherId"))) {
+        if (video.getLecture().getTeacher() != null && video.getLecture().getTeacher().getId().equals((Long) session.getAttribute("teacherId"))) {
             return "lecture/video-play";
         }
 
@@ -223,7 +276,7 @@ public class LectureController {
                 .filter(ml -> ml.getLecture().getId().equals(lectureId)).findAny().orElse(null);
         if (memberLecture != null) {
             return "lecture/review-write-form";
-        }else{
+        } else {
             return "lecture/review-write-not-enrolment";
         }
     }
@@ -242,7 +295,7 @@ public class LectureController {
 
         MemberLecture memberLecture = member.getLectures().stream()
                 .filter(ml -> ml.getLecture().getId().equals(lectureId)).findAny().orElse(null);
-        if(memberLecture==null)
+        if (memberLecture == null)
             return "lecture/review-write-not-enrolment";
 
         review.writeReview(lecture, member, form.getContent());
@@ -373,9 +426,9 @@ public class LectureController {
 
     @PutMapping("video/watched/{videoId}")
     @ResponseBody
-    public String videoWatched(@PathVariable("videoId")Long videoId,HttpSession session){
+    public String videoWatched(@PathVariable("videoId") Long videoId, HttpSession session) {
         Long memberId = (Long) session.getAttribute("memberId");
-        if(memberId==null)
+        if (memberId == null)
             return "not Member";
         Member member = memberService.info(memberId);
         Video video = lectureService.findVideo(videoId);
@@ -385,40 +438,40 @@ public class LectureController {
                 .filter(ml -> ml.getLecture().getId().equals(lecture.getId()))
                 .findAny().orElse(null);
 
-        if(memberLecture!=null){
+        if (memberLecture != null) {
             MemberLectureVideo memberLectureVideo = memberLecture.watchedVideosUpdate(video);
             lectureService.memberLectureVideoSave(memberLectureVideo);
         }
 
 
-        log.info("videoId = {}",videoId);
+        log.info("videoId = {}", videoId);
         return "ok";
     }
 
     @PutMapping("video/lastWatchedVideo/save")
     @ResponseBody
-    public String lastWatchedVideoSave(@RequestBody Map<String, String> data,HttpSession session){
+    public String lastWatchedVideoSave(@RequestBody Map<String, String> data, HttpSession session) {
         Long videoId = Long.valueOf(data.get("videoId"));
         double currentTime = Double.parseDouble(data.get("currentTime"));
-        Long memberId = (Long)session.getAttribute("memberId");
+        Long memberId = (Long) session.getAttribute("memberId");
 
-        lectureService.lastWatchedVideoSave(memberId,videoId,currentTime);
+        lectureService.lastWatchedVideoSave(memberId, videoId, currentTime);
 
         return "ok";
     }
 
     @GetMapping("video/replay/{lectureId}")
-    public String replay(@PathVariable("lectureId")Long lectureId,HttpSession session,Model model){
-        Long memberId = (Long)session.getAttribute("memberId");
-        MemberLecture memberLecture = memberService.getMemberLecture(memberId,lectureId);
-        if(memberLecture!=null) {
+    public String replay(@PathVariable("lectureId") Long lectureId, HttpSession session, Model model) {
+        Long memberId = (Long) session.getAttribute("memberId");
+        MemberLecture memberLecture = memberService.getMemberLecture(memberId, lectureId);
+        if (memberLecture != null) {
             Long lastWatchedVideoId = memberLecture.getLastWatchedVideoId();
 
             model.addAttribute("video", lectureService.findVideo(lastWatchedVideoId));
             model.addAttribute("lastWatchedVideoTime", memberLecture.getLastWatchedVideoTime());
-            log.info("lastWatchedVideoTime = {}",memberLecture.getLastWatchedVideoTime());
+            log.info("lastWatchedVideoTime = {}", memberLecture.getLastWatchedVideoTime());
             return "lecture/video-play";
-        }else {
+        } else {
             return "lecture/video-not-enrolment";
         }
     }

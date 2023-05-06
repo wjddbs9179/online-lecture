@@ -4,8 +4,12 @@ import lombok.Getter;
 import online.lecture.entity.category.Category;
 import online.lecture.entity.category.SubCategory;
 import online.lecture.entity.member.Teacher;
+import online.lecture.lecture.controller.domain.UpdateLectureForm;
+import online.lecture.lecture.controller.file.FileStore;
+import online.lecture.lecture.controller.file.UploadFile;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +19,8 @@ import static javax.persistence.CascadeType.*;
 @Getter
 public class Lecture {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "lecture_id")
     private Long id;
 
@@ -63,8 +68,20 @@ public class Lecture {
 
     }
 
-    public void addVideo(Video video){
+    public void addVideo(Video video) {
         videos.add(video);
         video.setLecture(this);
+    }
+
+    public void update(UpdateLectureForm form,SubCategory subCategory) throws IOException {
+        FileStore fileStore = new FileStore();
+        this.name = form.getName();
+        this.intro = form.getIntro();
+        this.subCategory = subCategory;
+        this.category = form.getCategory();
+        if (!form.getImageFile().isEmpty()) {
+            UploadFile imageFile = fileStore.storeFile(form.getImageFile());
+            this.imageRoute = imageFile.getStoreFilename();
+        }
     }
 }

@@ -32,8 +32,8 @@ public class LectureRepository {
         if(category.equals("")){
             return em.createQuery("select l from Lecture l where pub=true and l.name like concat('%',:nameQuery,'%')",Lecture.class)
                     .setParameter("nameQuery",nameQuery)
-                    .setFirstResult((page-1)*3)
-                    .setMaxResults(3)
+                    .setFirstResult((page-1)*9)
+                    .setMaxResults(9)
                     .getResultList();
         }
         Category mainCategory = Arrays.stream(Category.values()).filter(c -> c.name().equals(category)).findAny().orElse(null);
@@ -41,16 +41,16 @@ public class LectureRepository {
             return em.createQuery("select l from Lecture l where l.category=:category and pub=true and l.name like concat('%',:nameQuery,'%')",Lecture.class)
                     .setParameter("nameQuery",nameQuery)
                     .setParameter("category",mainCategory)
-                    .setFirstResult((page-1)*3)
-                    .setMaxResults(3)
+                    .setFirstResult((page-1)*9)
+                    .setMaxResults(9)
                     .getResultList();
         }else {
             SubCategory subCategory = Arrays.stream(SubCategory.values()).filter(sc -> sc.name().equals(category)).findAny().orElse(null);
             return em.createQuery("select l from Lecture l where l.subCategory=:subCategory and pub=true and l.name like concat('%',:nameQuery,'%') ",Lecture.class)
                     .setParameter("nameQuery",nameQuery)
                     .setParameter("subCategory",subCategory)
-                    .setFirstResult((page-1)*3)
-                    .setMaxResults(3)
+                    .setFirstResult((page-1)*9)
+                    .setMaxResults(9)
                     .getResultList();
         }
 
@@ -97,30 +97,24 @@ public class LectureRepository {
 
     }
 
-    public int getCount(String category, String nameQuery, int page) {
+    public Long getCount(String category, String nameQuery) {
         if(category.equals("")){
-            return em.createQuery("select count(l) from Lecture l where pub=true and l.name like concat('%',:nameQuery,'%')",Integer.class)
+            return em.createQuery("select count(l) from Lecture l where pub=true and l.name like concat('%',:nameQuery,'%')",Long.class)
                     .setParameter("nameQuery",nameQuery)
-                    .setFirstResult((page-1)*3)
-                    .setMaxResults(3)
-                    .getResultList().stream().findAny().orElse(0);
+                    .getResultList().stream().findAny().orElse(0L);
         }
         Category mainCategory = Arrays.stream(Category.values()).filter(c -> c.name().equals(category)).findAny().orElse(null);
         if (mainCategory != null) {
-            return em.createQuery("select count(l) from Lecture l where l.category=:category and pub=true and l.name like concat('%',:nameQuery,'%')",Integer.class)
+            return em.createQuery("select count(l) from Lecture l where l.category=:category and pub=true and l.name like concat('%',:nameQuery,'%')",Long.class)
                     .setParameter("nameQuery",nameQuery)
                     .setParameter("category",mainCategory)
-                    .setFirstResult((page-1)*3)
-                    .setMaxResults(3)
-                    .getResultList().stream().findAny().orElse(0);
+                    .getResultList().stream().findAny().orElse(0L);
         }else {
             SubCategory subCategory = Arrays.stream(SubCategory.values()).filter(sc -> sc.name().equals(category)).findAny().orElse(null);
-            return em.createQuery("select l from Lecture l where l.subCategory=:subCategory and pub=true and l.name like concat('%',:nameQuery,'%') ",Integer.class)
+            return em.createQuery("select count(l) from Lecture l where l.subCategory=:subCategory and pub=true and l.name like concat('%',:nameQuery,'%') ",Long.class)
                     .setParameter("nameQuery",nameQuery)
                     .setParameter("subCategory",subCategory)
-                    .setFirstResult((page-1)*3)
-                    .setMaxResults(3)
-                    .getResultList().stream().findAny().orElse(0);
+                    .getResultList().stream().findAny().orElse(0L);
         }
     }
 }

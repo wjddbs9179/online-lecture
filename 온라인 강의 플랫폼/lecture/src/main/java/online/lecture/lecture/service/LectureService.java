@@ -3,12 +3,15 @@ package online.lecture.lecture.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import online.lecture.entity.*;
+import online.lecture.entity.category.SubCategory;
 import online.lecture.lecture.controller.domain.ReviewUpdateForm;
+import online.lecture.lecture.controller.domain.UpdateLectureForm;
 import online.lecture.lecture.repository.*;
 import online.lecture.member.repository.MemberLectureRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -28,15 +31,15 @@ public class LectureService {
     public void regLecture(Lecture lecture, List<Video> videos) {
         lectureRepository.save(lecture);
 
-        for(Video video : videos){
+        for (Video video : videos) {
             videoRepository.save(video);
         }
     }
 
-    public Video findVideo(Long id){
+    public Video findVideo(Long id) {
         Video video = videoRepository.find(id);
-        if(video.getLecture().getTeacher()!=null){
-            log.info("teacher={}",video.getLecture().getTeacher().getId());
+        if (video.getLecture().getTeacher() != null) {
+            log.info("teacher={}", video.getLecture().getTeacher().getId());
         }
         return video;
     }
@@ -44,13 +47,13 @@ public class LectureService {
 
     public Lecture info(Long id) {
         Lecture lecture = lectureRepository.find(id);
-        log.info("teacher={}",lecture.getTeacher());
+        log.info("teacher={}", lecture.getTeacher());
         return lecture;
     }
 
     public Video nextVideo(Long lectureId, Long videoId) {
         Video video = videoRepository.nextVideo(lectureId, videoId);
-        if(video!=null) {
+        if (video != null) {
             if (video.getLecture().getTeacher() != null)
                 log.info("teacher={}", video.getLecture().getTeacher().getUsername());
         }
@@ -59,15 +62,15 @@ public class LectureService {
 
     public Video prevVideo(Long lectureId, Long videoId) {
         Video video = videoRepository.prevVideo(lectureId, videoId);
-        if(video!=null) {
+        if (video != null) {
             if (video.getLecture().getTeacher() != null)
                 log.info("teacher={}", video.getLecture().getTeacher().getUsername());
         }
         return video;
     }
 
-    public List<Lecture> filter(String category,String nameQuery,int page) {
-        return lectureRepository.filter(category,nameQuery,page);
+    public List<Lecture> filter(String category, String nameQuery, int page) {
+        return lectureRepository.filter(category, nameQuery, page);
     }
 
     public void reviewWrite(Review review) {
@@ -93,7 +96,7 @@ public class LectureService {
 
     public boolean validateTeacher(Long teacherId, Long reviewId) {
         Review review = reviewRepository.find(reviewId);
-        if(review.getLecture().getTeacher().getId().equals(teacherId))
+        if (review.getLecture().getTeacher().getId().equals(teacherId))
             return true;
 
         return false;
@@ -114,7 +117,7 @@ public class LectureService {
     public boolean validateTeacherByTeacherCommentId(Long teacherCommentId, Long teacherId) {
         TeacherComment teacherComment = teacherCommentRepository.findById(teacherCommentId);
 
-        if(teacherComment.getTeacher().getId().equals(teacherId))
+        if (teacherComment.getTeacher().getId().equals(teacherId))
             return true;
 
         return false;
@@ -143,24 +146,34 @@ public class LectureService {
         memberLectureVideo = memberLectureVideoRepository.save(memberLectureVideo);
         Long memberLectureId = memberLectureVideo.getMemberLecture().getId();
         MemberLecture memberLecture = memberLectureRepository.findById(memberLectureId);
-        double watchedVideoSize = (double)memberLecture.getWatchedVideos().size();
-        log.info("watchedVideoSize = {}",watchedVideoSize);
-        double videosSize = (double)memberLecture.getLecture().getVideos().size();
-        log.info("videosSize = {}",videosSize);
-        double progressRate = watchedVideoSize/videosSize;
-        log.info("memberLecture.progressRate = {}",progressRate);
-        memberLectureRepository.progressRateUpdate(progressRate,memberLecture.getId());
+        double watchedVideoSize = (double) memberLecture.getWatchedVideos().size();
+        log.info("watchedVideoSize = {}", watchedVideoSize);
+        double videosSize = (double) memberLecture.getLecture().getVideos().size();
+        log.info("videosSize = {}", videosSize);
+        double progressRate = watchedVideoSize / videosSize;
+        log.info("memberLecture.progressRate = {}", progressRate);
+        memberLectureRepository.progressRateUpdate(progressRate, memberLecture.getId());
     }
 
     public void lastWatchedVideoSave(Long memberId, Long videoId, double currentTime) {
         Long lectureId = lectureRepository.findIdByVideo(videoId);
-        MemberLecture memberLecture = memberLectureRepository.findByMemberAndLecture(memberId,lectureId);
+        MemberLecture memberLecture = memberLectureRepository.findByMemberAndLecture(memberId, lectureId);
 
         memberLecture.setLastWatchedVideoId(videoId);
         memberLecture.setLastWatchedVideoTime(currentTime);
     }
 
-    public int getLectureCount(String category, String nameQuery, int page) {
-        return lectureRepository.getCount(category,nameQuery,page);
+    public Long getLectureCount(String category, String nameQuery) {
+        return lectureRepository.getCount(category, nameQuery);
+    }
+
+    public void lectureUpdate(Long lectureId, UpdateLectureForm form, List<Video> videos, SubCategory subCategory) throws IOException {
+        Lecture lecture = lectureRepository.find(lectureId);
+        lecture.update(form, subCategory);
+
+            videoRepository.deleteVideoByLecture(lecture);
+        for (Video video : videos) {
+            videoRepository.save(video);
+        }
     }
 }

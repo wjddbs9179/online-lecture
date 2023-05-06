@@ -28,6 +28,7 @@
     <button style="text-align:right;" th:if="${session.adminId!=null}" type="button" class="btn btn-danger" th:onclick="|location.href='/admin/deleteLecture/${lecture.id}'|">삭제</button>
     <button th:if="${enrolment&&session.adminId==null&&session.teacherId==null}" class="btn btn-primary" type="button" th:onclick="|location.href='/lecture/review-write/${lecture.id}'|">수강평 작성</button>
     <button class="btn btn-primary" type="button" th:onclick="|location.href='/lecture/review/read/${lecture.id}'|">수강평 보기</button>
+    <span th:if="${session.teacherId!=null}"><a th:if="${lecture.teacher.id==session.teacherId}"type="button" class="btn btn-primary" th:href="|/lecture/update/${lecture.id}|">수정</a></span>
   </div>
 </section>
 </body>

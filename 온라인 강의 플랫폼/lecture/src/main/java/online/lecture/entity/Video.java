@@ -30,7 +30,7 @@ public class Video {
         this.videoRoute = videoRoute;
     }
 
-    void setLecture(Lecture lecture) {
+    public void setLecture(Lecture lecture) {
         this.lecture = lecture;
     }
 }

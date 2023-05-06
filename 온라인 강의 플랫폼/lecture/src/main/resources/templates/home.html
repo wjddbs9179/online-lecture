@@ -47,8 +47,12 @@
             </div>
         </div>
         <div style="text-align:center;">
-            <a th:if="${page>5}" class="btn btn-info" th:href="|/?category=${nowCategory}&nameQuery=${nameQuery}&page=${page/5+4}|">≪</a>
-            <a th:if="${page}" class="btn btn-info" th:href="|/?category=${nowCategory}&nameQuery=${nameQuery}&page=${page%5}|">ㄷ</a>
+            <a th:if="${firstPage!=1}" class="btn btn-info btn-xs" th:href="|/?category=${nowCategory}&nameQuery=${nameQuery}&page=${firstPage-1}|">≪</a>
+            <span th:each="num : ${#numbers.sequence(firstPage,lastPage)}">
+                <a th:if="${page!=num&&num<=totalPage}"  th:href="|/?category=${nowCategory}&nameQuery=${nameQuery}&page=${num}|" th:text="|${num} |"></a>
+                <span th:if="${page==num&&num<=totalPage}" th:text="${num}"></span>
+            </span>
+            <a th:if="${lastPage+1<totalPage}" class="btn btn-info btn-xs" th:href="|/?category=${nowCategory}&nameQuery=${nameQuery}&page=${lastPage+1}|">≫</a>
         </div>
     </div>
 </section>
