@@ -29,28 +29,30 @@ public class LectureRepository {
 
     public List<Lecture> filter(String category,String nameQuery,int page) {
 
+        int maxResult = 9;
+
         if(category.equals("")){
-            return em.createQuery("select l from Lecture l where pub=true and l.name like concat('%',:nameQuery,'%')",Lecture.class)
+            return em.createQuery("select l from Lecture l where pub=true and l.name like concat('%',:nameQuery,'%') order by l.id desc",Lecture.class)
                     .setParameter("nameQuery",nameQuery)
-                    .setFirstResult((page-1)*9)
-                    .setMaxResults(9)
+                    .setFirstResult((page-1)*maxResult)
+                    .setMaxResults(maxResult)
                     .getResultList();
         }
         Category mainCategory = Arrays.stream(Category.values()).filter(c -> c.name().equals(category)).findAny().orElse(null);
         if (mainCategory != null) {
-            return em.createQuery("select l from Lecture l where l.category=:category and pub=true and l.name like concat('%',:nameQuery,'%')",Lecture.class)
+            return em.createQuery("select l from Lecture l where l.category=:category and pub=true and l.name like concat('%',:nameQuery,'%') order by l.id desc",Lecture.class)
                     .setParameter("nameQuery",nameQuery)
                     .setParameter("category",mainCategory)
-                    .setFirstResult((page-1)*9)
-                    .setMaxResults(9)
+                    .setFirstResult((page-1)*maxResult)
+                    .setMaxResults(maxResult)
                     .getResultList();
         }else {
             SubCategory subCategory = Arrays.stream(SubCategory.values()).filter(sc -> sc.name().equals(category)).findAny().orElse(null);
-            return em.createQuery("select l from Lecture l where l.subCategory=:subCategory and pub=true and l.name like concat('%',:nameQuery,'%') ",Lecture.class)
+            return em.createQuery("select l from Lecture l where l.subCategory=:subCategory and pub=true and l.name like concat('%',:nameQuery,'%') order by l.id desc",Lecture.class)
                     .setParameter("nameQuery",nameQuery)
                     .setParameter("subCategory",subCategory)
-                    .setFirstResult((page-1)*9)
-                    .setMaxResults(9)
+                    .setFirstResult((page-1)*maxResult)
+                    .setMaxResults(maxResult)
                     .getResultList();
         }
 

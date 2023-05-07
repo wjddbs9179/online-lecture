@@ -32,9 +32,9 @@
         <div>
             <div class="row">
                 <div class="col-md-4" th:each="lecture, iterStat :${recentLecture}">
-                    <div class="card">
+                    <div class="card" style="height:270px;">
                         <a th:href="|/lecture/info/${lecture.id}|">
-                            <img class="card-img-top" style="width:280px;" height="220px;"
+                            <img class="card-img-top" style="width:310px;" height="220px;"
                                  th:src="|/lecture/images/${lecture.imageRoute}|">
                         </a>
                         <div class="card-body">
@@ -46,15 +46,23 @@
                 </div>
             </div>
         </div>
-        <div style="text-align:center;">
-            <a th:if="${firstPage!=1}" class="btn btn-info btn-xs" th:href="|/?category=${nowCategory}&nameQuery=${nameQuery}&page=${firstPage-1}|">≪</a>
-            <span th:each="num : ${#numbers.sequence(firstPage,lastPage)}">
-                <a th:if="${page!=num&&num<=totalPage}"  th:href="|/?category=${nowCategory}&nameQuery=${nameQuery}&page=${num}|" th:text="|${num} |"></a>
-                <span th:if="${page==num&&num<=totalPage}" th:text="${num}"></span>
-            </span>
-            <a th:if="${lastPage+1<totalPage}" class="btn btn-info btn-xs" th:href="|/?category=${nowCategory}&nameQuery=${nameQuery}&page=${lastPage+1}|">≫</a>
+        <nav aria-label="Page navigation example" style="text-align:center;">
+            <ul class="pagination">
+                <li class="page-item" th:if="${firstPage!=1}">
+                    <a th:href="|/?category=${nowCategory}&nameQuery=${nameQuery}&page=${firstPage-1}|">＜이전</a>
+                </li>
+                <li class="page-item" th:each="num : ${#numbers.sequence(firstPage,lastPage)}">
+                    <a class="page-link" th:if="${page!=num&&num<=totalPage}"
+                       th:href="|/?category=${nowCategory}&nameQuery=${nameQuery}&page=${num}|" th:text="|${num} |"></a>
+                    <span class="page-link" style="background-color: aqua;" th:if="${page==num&&num<=totalPage}" th:text="${num}"></span>
+                </li>
+                <li class="page-item" th:if="${lastPage<totalPage}">
+                    <a class="page-link"
+                       th:href="|/?category=${nowCategory}&nameQuery=${nameQuery}&page=${lastPage+1}|">다음＞</a>
+                </li>
+            </ul>
+        </nav>
         </div>
-    </div>
 </section>
 </body>
 </html>

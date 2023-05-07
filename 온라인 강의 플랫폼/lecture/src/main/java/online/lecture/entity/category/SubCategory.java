@@ -6,7 +6,7 @@ public enum SubCategory {
     BACK_END("백엔드"),
     FULL_STACK("풀스택"),
     MOBILE_APP_DEVELOPMENT("모바일 앱 개발"),
-    GAME_DEVELOPMENT("게임 개발"),
+    GAME_DEVELOPMENT_SUB("게임 개발"),
     PROGRAMMING_LANGUAGE("프로그래밍 언어"),
     ALGORITHM_DATA_STRUCTURE("알고리즘 · 자료구조"),
     DATABASE("데이터베이스"),

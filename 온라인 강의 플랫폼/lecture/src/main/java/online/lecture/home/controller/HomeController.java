@@ -30,7 +30,7 @@ public class HomeController {
             , @RequestParam(value = "page", defaultValue = "1") int page) {
         List<Lecture> recentLecture = lectureService.filter(category, nameQuery, page);
         Long count = lectureService.getLectureCount(category,nameQuery);
-
+        int maxResult = 9;
 
         Category realCategory = Arrays.stream(Category.values()).filter(c -> c.name().equals(category)).findAny().orElse(null);
         SubCategory realSubCategory = Arrays.stream(SubCategory.values()).filter(c -> c.name().equals(category)).findAny().orElse(null);
@@ -44,7 +44,7 @@ public class HomeController {
 
         model.addAttribute("firstPage",page%5==0 ? ((page-1)/5*5)+1 : ((page/5*5)+1));
         model.addAttribute("lastPage",page%5==0 ? ((page-1)/5+1)*5 : (page/5+1)*5);
-        model.addAttribute("totalPage", count%9==0 ? count/9 : count/9+1);
+        model.addAttribute("totalPage", count%maxResult==0 ? count/maxResult : count/maxResult+1);
         model.addAttribute("count",count);
         model.addAttribute("nameQuery",nameQuery);
         model.addAttribute("page", page);
