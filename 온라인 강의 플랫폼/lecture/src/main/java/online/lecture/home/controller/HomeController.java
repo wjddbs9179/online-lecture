@@ -26,11 +26,11 @@ public class HomeController {
     private final LectureService lectureService;
 
     @GetMapping("/")
-    public String homeFilter(Model model, @RequestParam(value = "category", defaultValue = "") String category, @RequestParam(value = "nameQuery", defaultValue = "") String nameQuery
+    public String homeFilter(Model model, @RequestParam(value = "category", defaultValue = "") String category,@RequestParam(value = "subCategory", defaultValue = "")String subCategory, @RequestParam(value = "nameQuery", defaultValue = "") String nameQuery
             , @RequestParam(value = "page", defaultValue = "1") int page) {
-        List<Lecture> recentLecture = lectureService.filter(category, nameQuery, page);
+        List<Lecture> recentLecture = lectureService.filter(category, subCategory, nameQuery, page);
         Long count = lectureService.getLectureCount(category,nameQuery);
-        int maxResult = 9;
+        int maxResult = 15;
 
         Category realCategory = Arrays.stream(Category.values()).filter(c -> c.name().equals(category)).findAny().orElse(null);
         SubCategory realSubCategory = Arrays.stream(SubCategory.values()).filter(c -> c.name().equals(category)).findAny().orElse(null);
@@ -42,8 +42,8 @@ public class HomeController {
             model.addAttribute("nowCategory", "");
         }
 
-        model.addAttribute("firstPage",page%5==0 ? ((page-1)/5*5)+1 : ((page/5*5)+1));
-        model.addAttribute("lastPage",page%5==0 ? ((page-1)/5+1)*5 : (page/5+1)*5);
+        model.addAttribute("firstPage",page%10==0 ? ((page-1)/10*10)+1 : ((page/10*10)+1));
+        model.addAttribute("lastPage",page%10==0 ? ((page-1)/10+1)*10 : (page/10+1)*10);
         model.addAttribute("totalPage", count%maxResult==0 ? count/maxResult : count/maxResult+1);
         model.addAttribute("count",count);
         model.addAttribute("nameQuery",nameQuery);

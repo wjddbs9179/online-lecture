@@ -127,6 +127,7 @@ public class AdminController {
             lecture.addVideo(video);
             videos.add(video);
         }
+
         lectureService.regLecture(lecture,videos);
 
         return "redirect:/";
@@ -195,4 +196,10 @@ public class AdminController {
         }
     }
 
+//    @GetMapping("sampleDataCreate")
+    public String sampleDataCreate(){
+
+        lectureService.sampleDataCreate();
+        return "redirect:/";
+    }
 }

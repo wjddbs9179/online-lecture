@@ -6,12 +6,12 @@
 </head>
 <body>
 <section>
-    <div style="width:800px;" class="container">
+    <div style="width:900px;" class="container">
         <h3 th:text="${video.name}" class="text-primary"></h3>
         <hr>
         <div id="player"></div>
 
-        <video th:if="${video.videoRoute.substring(0,5)!='https'}" width="770px" height="500px" id="video-player"
+        <video th:if="${video.videoRoute.substring(0,5)!='https'}" width="870px" height="500px" id="video-player"
                th:src="|/lecture/videoFile/${video.videoRoute}|" autoplay="autoplay" controls="controls">
         </video>
         <hr>
@@ -36,7 +36,7 @@
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
                 videoId: videoRouteId,
-                width: 770,
+                width: 870,
                 height: 500,
                 playerVars: {
                     'start': parseInt(lastWatchedVideoTime)

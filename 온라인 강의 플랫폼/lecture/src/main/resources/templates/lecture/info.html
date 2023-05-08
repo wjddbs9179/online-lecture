@@ -16,7 +16,7 @@
     <p th:text="${lecture.intro}"></p>
     <table class="table">
     <tr th:if="${enrolment && session.adminId==null && session.teacherId==null}">
-      <th colspan="2"><a th:href="|/lecture/video/replay/${lecture.id}|" type="button" class="btn btn-success">시청재게</a></th>
+      <th colspan="2"><a th:href="|/lecture/video/replay/${lecture.id}|" type="button" class="btn btn-success">이어 학습하기</a></th>
     </tr>
     <tr><td colspan="2">목차</td></tr>
     <tr th:each="video, iterStat : ${lecture.videos}" >

@@ -69,8 +69,8 @@ public class LectureService {
         return video;
     }
 
-    public List<Lecture> filter(String category, String nameQuery, int page) {
-        return lectureRepository.filter(category, nameQuery, page);
+    public List<Lecture> filter(String category, String subCategory,String nameQuery, int page) {
+        return lectureRepository.filter(category, subCategory, nameQuery, page);
     }
 
     public void reviewWrite(Review review) {
@@ -175,5 +175,9 @@ public class LectureService {
         for (Video video : videos) {
             videoRepository.save(video);
         }
+    }
+
+    public void sampleDataCreate() {
+        lectureRepository.sampleDataCreate();
     }
 }

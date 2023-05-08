@@ -16,19 +16,20 @@
 </head>
 <body>
 <div class="container">
-    <header style="text-align:center">
-        <a th:if="${session.adminId!=null}" style="text-align:left; display:block;" href="/admin/home" class="text-primary"><h3>관리자 홈</h3></a>
-        <a style="text-align:left; display:inline-block;" href="/" class="text-primary"><h3>홈페이지</h3></a>
-    </header>
     <aside style="text-align:right">
-        <div th:if="${session.memberId==null&&session.teacherId==null&&session.adminId==null}" id="login-menu">
-            <a href="/member/login" class="btn btn-success">로그인</a>
+        <div style="height:10px;"></div>
+        <div th:if="${session.memberId==null&&session.teacherId==null&&session.adminId==null}">
+            <nav style="text-align:right;" class="top-menu">
+                <ul>
+                    <li><a href="/member/login">로그인</a></li>
+                </ul>
+            </nav>
         </div>
         <div th:if="${session.memberId!=null&&session.teacherId==null&&session.adminId==null}">
-            <nav class="top-menu">
+            <nav class="member-menu">
                 <ul>
                     <li>
-                        <a href="#">메뉴</a>
+                        <a href="#"><img th:src="|/lecture/images/회원메뉴.png|"></a>
                         <ul>
                             <li><a href="/member/myLecture">내 학습</a></li>
                             <li><a href="/member/myInfo">내 정보</a></li>
@@ -39,10 +40,10 @@
             </nav>
         </div>
         <div th:if="${session.memberId==null&&session.teacherId!=null&&session.adminId==null}">
-            <nav class="top-menu">
+            <nav class="member-menu">
                 <ul>
                     <li>
-                        <a href="#">메뉴</a>
+                        <a href="#"><img th:src="|/lecture/images/회원메뉴.png|"></a>
                         <ul>
                             <li><a href="/lecture/reg-lecture">강의 등록 신청</a></li>
                             <li><a href="/member/myLecture/teacher">내 강의</a></li>
@@ -54,10 +55,10 @@
             </nav>
         </div>
         <div th:if="${session.adminId!=null}">
-            <nav class="top-menu">
+            <nav class="member-menu">
                 <ul>
                     <li>
-                        <a href="#">메뉴</a>
+                        <a href="#"><img th:src="|/lecture/images/회원메뉴.png|"></a>
                         <ul>
                             <li><a href="/admin/lecture/reg">강의 등록</a></li>
                             <li><a href="/member/logout">로그아웃</a></li>
@@ -66,8 +67,14 @@
                 </ul>
             </nav>
         </div>
-        <hr>
     </aside>
+    <header style="text-align:center">
+        <a th:if="${session.adminId!=null}" style="text-align:left; display:block;" href="/admin/home"
+           class="text-primary"><h3>관리자 홈</h3></a>
+        <a style="text-align:left; display:inline-block;" href="/" class="text-primary"><img
+                style="width:270px; height:100px;" th:src="|/lecture/images/lecture_logo.png|"></a>
+    </header>
+    <hr>
 </div>
 <div th:replace="${content}">
 </div>
@@ -134,7 +141,7 @@
     }
 
     nav.top-menu > ul {
-        text-align:center;
+        text-align: center;
         display: inline-block;
         border-radius: 5px;
         padding: 0 10px;
@@ -188,10 +195,75 @@
         white-space: nowrap;
     }
 
-    div#login-menu {
-        display: inline-block;
-        position:absolute;
+    nav.member-menu ul, li {
+        margin: 0;
+        padding: 0;
+        list-style: none;
     }
+
+    nav.member-menu a {
+        color: inherit;
+        text-decoration: none;
+        display: block;
+    }
+
+    nav.member-menu > ul {
+        text-align: center;
+        display: inline-block;
+        background-color: #dfdfdf;
+    }
+
+    nav.member-menu > ul > li {
+        background-color:white;
+    }
+
+    nav.member-menu li {
+        background-color: #dfdfdf;
+        position: relative;
+    }
+
+    nav.member-menu li:hover {
+        background-color: black;
+    }
+
+    nav.member-menu li:hover > ul {
+        display: block;
+        z-index: 1;
+    }
+
+    nav.member-menu li:hover > a {
+        color: white;
+    }
+
+    nav.member-menu ul ul {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+    }
+
+    nav.member-menu ul ul ul {
+        top: 0;
+        left: 100%;
+    }
+
+    nav.member-menu > ul > li {
+        display: block;
+        float: left;
+    }
+
+    nav.member-menu > ul::after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+
+    nav.member-menu a {
+        padding: 10px;
+        display: block;
+        white-space: nowrap;
+    }
+
 
     .field-error {
         color: red;
@@ -199,6 +271,31 @@
 
     .field-error-input {
         border-color: red;
+    }
+
+    body.home-body {
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    body.home-body::after {
+        width: 100%;
+        height: 93.21%;
+        content: "";
+        position: absolute;
+        top: 6.79%;
+        left: 0;
+        text-align: center;
+        background-image: url("/lecture/images/book.jpg");
+        opacity: 0.5;
+        z-index: -1;
+    }
+
+    a {
+        color: black;
     }
 </style>
 </html>

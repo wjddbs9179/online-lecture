@@ -86,7 +86,6 @@ public class LectureController {
             videos.add(video);
         }
         lectureService.regLecture(lecture, videos);
-
         return "redirect:/";
     }
 
@@ -142,16 +141,8 @@ public class LectureController {
             model.addAttribute("enrolment", true);
         } else if (memberId != null) {
             Member member = memberService.info(memberId);
-            MemberLecture ml = member.getLectures().stream()
-                    .filter(memberLecture -> memberLecture.getMember().getId() == memberId
-                            && memberLecture.getLecture().getId() == id)
-                    .findAny().orElse(null);
-
-            if (ml != null) {
-                model.addAttribute("enrolment", true);
-            } else {
-                model.addAttribute("enrolment", false);
-            }
+            boolean enrolment = memberService.enrolmentValid(member,lecture);
+                model.addAttribute("enrolment", enrolment);
         } else if (teacherId != null) {
             Teacher teacher = memberService.info_teacher(teacherId);
             Lecture tl = teacher.getMyLectures().stream().filter(l -> l.getId().equals(lecture.getId()))

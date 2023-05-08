@@ -127,4 +127,10 @@ public class MemberService {
     public MemberLecture getMemberLecture(Long memberId, Long lectureId) {
         return memberLectureRepository.findByMemberAndLecture(memberId,lectureId);
     }
+
+    public boolean enrolmentValid(Member member, Lecture lecture) {
+        if(memberLectureRepository.findByMemberAndLecture(member.getId(), lecture.getId())!=null)
+            return true;
+        return false;
+    }
 }
