@@ -65,7 +65,7 @@ public class AdminController {
         session.setAttribute("teacherId",null);
         session.setAttribute("adminId", admin.getId());
 
-        return "redirect:/admin/home";
+        return "redirect:/";
     }
 
     @GetMapping("pubTrue/{id}")

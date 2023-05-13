@@ -58,8 +58,9 @@
             <nav class="member-menu">
                 <ul>
                     <li>
-                        <a href="#"><img th:src="|/lecture/images/회원메뉴.png|"></a>
+                        <a href="#"><img th:src="|/lecture/images/admin-menu.png|"></a>
                         <ul>
+                            <li><a href="/admin/home">등록대기 강의</a></li>
                             <li><a href="/admin/lecture/reg">강의 등록</a></li>
                             <li><a href="/member/logout">로그아웃</a></li>
                         </ul>
@@ -69,8 +70,6 @@
         </div>
     </aside>
     <header style="text-align:center">
-        <a th:if="${session.adminId!=null}" style="text-align:left; display:block;" href="/admin/home"
-           class="text-primary"><h3>관리자 홈</h3></a>
         <a style="text-align:left; display:inline-block;" href="/" class="text-primary"><img
                 style="width:270px; height:100px;" th:src="|/lecture/images/lecture_logo.png|"></a>
     </header>
