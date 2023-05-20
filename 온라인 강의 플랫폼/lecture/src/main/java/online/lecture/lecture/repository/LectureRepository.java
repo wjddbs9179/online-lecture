@@ -39,7 +39,7 @@ public class LectureRepository {
                     .getResultList();
         } else {
             Category mainCategory = Arrays.stream(Category.values()).filter(c -> c.name().equals(category)).findAny().orElse(null);
-            SubCategory realSubCategory = Arrays.stream(SubCategory.values()).filter(sc -> sc.name().equals(category)).findAny().orElse(null);
+            SubCategory realSubCategory = Arrays.stream(SubCategory.values()).filter(sc -> sc.name().equals(subCategory)).findAny().orElse(null);
             if (realSubCategory == null) {
                 return em.createQuery("select l from Lecture l where l.category=:category and pub=true and l.name like concat('%',:nameQuery,'%') order by l.id desc", Lecture.class)
                         .setParameter("nameQuery", nameQuery)
